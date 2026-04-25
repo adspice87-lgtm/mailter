@@ -3,1338 +3,1886 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MailFlow — AI Email Pipeline</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<title>MailFlow v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300;1,500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0c0e;
-  --s1: #141416;
-  --s2: #1c1c20;
-  --s3: #252528;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.13);
-  --accent: #b5f542;
-  --accent-d: rgba(181,245,66,0.1);
-  --accent-d2: rgba(181,245,66,0.05);
-  --text: #f0f0ee;
-  --t2: #9a9a96;
-  --t3: #55554f;
-  --ai: #7dd3fc;
-  --ai-d: rgba(125,211,252,0.08);
-  --human: #fb923c;
-  --human-d: rgba(251,146,60,0.08);
-  --danger: #f87171;
-  --success: #86efac;
-  --warn: #fbbf24;
-  --r: 12px;
-  --r-sm: 8px;
-  --r-xs: 6px;
+  --bg: #0a0a0b;
+  --s1: #111113;
+  --s2: #18181c;
+  --s3: #222228;
+  --s4: #2c2c34;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --border3: rgba(255,255,255,0.18);
+  --text: #ececea;
+  --t2: #888884;
+  --t3: #444440;
+  --accent: #d4f53c;
+  --accent-d: rgba(212,245,60,0.08);
+  --accent-d2: rgba(212,245,60,0.04);
+  --blue: #60a5fa;
+  --blue-d: rgba(96,165,250,0.08);
+  --purple: #a78bfa;
+  --purple-d: rgba(167,139,250,0.08);
+  --orange: #fb923c;
+  --orange-d: rgba(251,146,60,0.08);
+  --green: #4ade80;
+  --green-d: rgba(74,222,128,0.08);
+  --red: #f87171;
+  --red-d: rgba(248,113,113,0.08);
+  --yellow: #fbbf24;
+  --r: 10px;
+  --r-sm: 7px;
+  --r-xs: 5px;
+  --sidebar: 210px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-::-webkit-scrollbar{width:3px}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb{background:var(--s4);border-radius:4px}
 
-/* SHELL */
-.shell{display:flex;height:100vh;overflow:hidden}
+/* ── SHELL ── */
+.shell{display:flex;height:100vh}
 
-/* SIDEBAR */
+/* ── SIDEBAR ── */
 aside{
-  width:220px;flex-shrink:0;
-  background:var(--s1);
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  overflow:hidden;
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
 }
-.logo{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
-.logo-name{font-size:17px;font-weight:800;letter-spacing:-0.02em;line-height:1}
-.logo-name span{color:var(--accent)}
-.logo-tag{font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;letter-spacing:0.08em;margin-top:5px}
-nav{padding:12px 10px;flex:1;overflow-y:auto}
-.nav-section{font-size:10px;font-family:'DM Mono',monospace;color:var(--t3);letter-spacing:0.1em;padding:14px 10px 6px;text-transform:uppercase}
+.logo{padding:20px 16px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.logo-text{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-0.02em}
+.logo-text span{color:var(--accent)}
+.logo-sub{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;margin-top:3px}
+
+nav{padding:10px 8px;flex:1;overflow-y:auto}
+.nav-group{margin-bottom:4px}
+.nav-label{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);letter-spacing:0.08em;text-transform:uppercase;padding:10px 8px 4px}
 .nav-item{
-  display:flex;align-items:center;gap:9px;
-  padding:9px 10px;border-radius:var(--r-sm);
-  font-size:13px;font-weight:500;color:var(--t2);
-  cursor:pointer;transition:all 0.15s;margin-bottom:1px;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 9px;border-radius:var(--r-sm);
+  font-size:12px;font-weight:500;color:var(--t2);
+  cursor:pointer;transition:all 0.12s;margin-bottom:1px;
   user-select:none;
 }
 .nav-item:hover{background:var(--s2);color:var(--text)}
-.nav-item.active{background:var(--accent-d);color:var(--accent)}
-.nav-icon{font-size:14px;width:18px;text-align:center;opacity:0.8;flex-shrink:0}
-.nav-badge{
-  margin-left:auto;font-size:10px;font-weight:700;
-  font-family:'DM Mono',monospace;
-  background:var(--accent);color:#0c0c0e;
-  padding:2px 6px;border-radius:100px;
-  display:none;
-}
+.nav-item.on{background:var(--accent-d);color:var(--accent)}
+.nav-ico{width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;opacity:0.7}
+.nav-badge{margin-left:auto;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;background:var(--accent);color:#0a0a0b;padding:1px 5px;border-radius:100px;display:none}
 .nav-badge.show{display:block}
-.sidebar-foot{padding:14px 20px;border-top:1px solid var(--border)}
-.api-status{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t3);font-family:'DM Mono',monospace}
-.pulse{width:6px;height:6px;border-radius:50%;background:var(--t3);flex-shrink:0}
-.pulse.ok{background:var(--accent);animation:pulse 2.5s ease-in-out infinite}
-.pulse.err{background:var(--danger)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-/* MAIN */
+.aside-foot{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0}
+.status-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--t3);flex-shrink:0}
+.dot.ok{background:var(--accent);animation:blink 2.5s ease-in-out infinite}
+.dot.err{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+
+/* ── MAIN ── */
 main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-/* TOPBAR */
+/* ── TOPBAR ── */
 .topbar{
-  padding:14px 32px;
-  border-bottom:1px solid var(--border);
+  padding:12px 24px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(12,12,14,0.8);backdrop-filter:blur(20px);
-  position:sticky;top:0;z-index:50;flex-shrink:0;
+  background:rgba(10,10,11,0.7);backdrop-filter:blur(20px);
+  flex-shrink:0;z-index:50;
 }
-.topbar-left{min-width:0}
-.topbar-title{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-sub{font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;margin-top:2px}
-.chips{display:flex;gap:8px;align-items:center;flex-shrink:0}
-.chip{
-  display:flex;align-items:center;gap:5px;
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:100px;padding:5px 12px;
-  font-size:12px;
-}
-.chip-n{font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)}
+.topbar-l{min-width:0}
+.topbar-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-sub{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.topbar-r{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.chip{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:4px 10px;font-size:11px}
+.chip-n{font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)}
 .chip-l{color:var(--t3)}
 
-/* SCROLLABLE CONTENT */
-.content{flex:1;overflow-y:auto;padding:28px 32px}
+/* ── SCROLLABLE ── */
+.view{flex:1;overflow-y:auto;overflow-x:hidden}
+.sec{display:none;padding:24px}.sec.on{display:block}
+.pad{padding:24px}
 
-/* SECTIONS */
-.sec{display:none}.sec.on{display:block}
+/* ── SECTION HEADER ── */
+.sh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px}
+.sh-l{}
+.sh-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:3px}
+.sh-sub{font-size:12px;color:var(--t2);font-family:'JetBrains Mono',monospace}
+.sh-r{display:flex;gap:7px;align-items:center;flex-shrink:0}
 
-/* ─── PIPELINE ─── */
-.pipeline-wrap{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;padding:7px 14px;border-radius:var(--r-sm);border:1px solid var(--border2);background:transparent;color:var(--t2);cursor:pointer;transition:all 0.12s;white-space:nowrap;letter-spacing:0.01em}
+.btn:hover{background:var(--s2);color:var(--text);border-color:var(--border3)}
+.btn:disabled{opacity:0.3;cursor:default;pointer-events:none}
+.btn-acc{background:var(--accent);border-color:var(--accent);color:#0a0a0b;font-weight:700}
+.btn-acc:hover{background:#e8ff4a;border-color:#e8ff4a;color:#0a0a0b}
+.btn-ghost{border-color:rgba(212,245,60,0.25);color:var(--accent)}
+.btn-ghost:hover{background:var(--accent-d)}
+.btn-blue{border-color:rgba(96,165,250,0.25);color:var(--blue)}
+.btn-blue:hover{background:var(--blue-d)}
+.btn-red{border-color:rgba(248,113,113,0.25);color:var(--red)}
+.btn-red:hover{background:var(--red-d)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-row{display:flex;gap:6px;flex-wrap:wrap}
 
-/* STAGES */
-.stages{display:flex;flex-direction:column}
-.stage-row{display:flex;gap:0;align-items:stretch}
-.stage-gutter{
-  display:flex;flex-direction:column;align-items:center;
-  width:36px;flex-shrink:0;padding-top:18px;
-}
-.snode{
-  width:14px;height:14px;border-radius:50%;
-  border:1.5px solid var(--border2);background:var(--bg);
-  flex-shrink:0;transition:all 0.3s;position:relative;
-}
-.snode.ai{border-color:var(--ai);background:var(--ai-d)}
-.snode.human{border-color:var(--human);background:var(--human-d)}
-.snode.done{border-color:var(--accent);background:var(--accent-d)}
-.snode.done::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:7px;color:var(--accent);font-weight:700}
-.sline{width:1px;background:var(--border);flex:1;min-height:12px}
-
-.scard{
-  flex:1;background:var(--s1);border:1px solid var(--border);
-  border-radius:var(--r);margin-bottom:8px;overflow:hidden;
-  transition:border-color 0.2s;
-}
-.scard:hover{border-color:var(--border2)}
-.scard.exp{border-color:rgba(181,245,66,0.25)}
-.scard.skip{opacity:0.25;pointer-events:none}
-.scard.done-card{border-color:rgba(134,239,172,0.15)}
-
-.shead{
-  padding:14px 18px;display:flex;align-items:center;gap:10px;
-  cursor:pointer;user-select:none;
-}
-.sbadge{
-  font-size:10px;font-weight:700;letter-spacing:0.07em;
-  padding:3px 7px;border-radius:100px;text-transform:uppercase;
-  font-family:'DM Mono',monospace;flex-shrink:0;
-}
-.b-ai{background:var(--ai-d);color:var(--ai);border:1px solid rgba(125,211,252,0.2)}
-.b-human{background:var(--human-d);color:var(--human);border:1px solid rgba(251,146,60,0.2)}
-.sname{font-size:13px;font-weight:600;flex:1;min-width:0}
-.sarrow{font-size:11px;color:var(--t3);transition:transform 0.2s;flex-shrink:0}
-.sarrow.open{transform:rotate(180deg)}
-
-.sbody{display:none;padding:0 18px 18px}
-.sbody.open{display:block}
-.sdesc{
-  font-size:13px;color:var(--t2);line-height:1.65;
-  padding:12px 0 14px;
-  font-family:'Lora',serif;font-style:italic;
-  border-top:1px solid var(--border);
-}
-
-/* FORM */
-.flabel{
-  display:block;font-size:10px;font-weight:700;
-  letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--t3);margin-bottom:6px;
-  font-family:'DM Mono',monospace;
-}
+/* ── FORM ── */
+.flbl{display:block;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;font-family:'JetBrains Mono',monospace}
 .field{margin-bottom:12px}
-textarea,input[type=text],input[type=email],input[type=password],input[type=number],select{
-  width:100%;background:var(--s2);border:1px solid var(--border);
-  border-radius:var(--r-sm);color:var(--text);
-  font-family:'Syne',sans-serif;font-size:13px;
-  padding:9px 11px;resize:vertical;outline:none;
-  transition:border-color 0.15s;line-height:1.6;
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],select,textarea{
+  width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);
+  color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:13px;
+  padding:8px 10px;outline:none;transition:border-color 0.12s;
 }
-textarea:focus,input:focus,select:focus{border-color:var(--border2)}
+input:focus,select:focus,textarea:focus{border-color:var(--border3)}
+textarea{resize:vertical;line-height:1.6}
 select option{background:var(--s2)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-full{grid-column:1/-1}
 
-/* BUTTONS */
-.btn{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:13px;font-weight:600;font-family:'Syne',sans-serif;
-  padding:8px 16px;border-radius:var(--r-sm);
-  border:1px solid var(--border2);background:transparent;
-  color:var(--t2);cursor:pointer;transition:all 0.15s;
-  white-space:nowrap;
+/* ── CARDS / TILES ── */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;transition:border-color 0.15s}
+.card:hover{border-color:var(--border2)}
+.card.clickable{cursor:pointer}
+.card.clickable:hover{border-color:var(--border3)}
+
+/* ── CAMPAIGN TYPE TABS ── */
+.camp-tabs{display:flex;gap:6px;margin-bottom:20px}
+.camp-tab{
+  flex:1;padding:14px 16px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--s1);
+  cursor:pointer;transition:all 0.15s;text-align:left;
 }
-.btn:hover{background:var(--s2);color:var(--text)}
-.btn:disabled{opacity:0.35;cursor:default;pointer-events:none}
-.btn-acc{background:var(--accent);border-color:var(--accent);color:#0c0c0e}
-.btn-acc:hover{background:#c8f55a;border-color:#c8f55a;color:#0c0c0e}
-.btn-ghost-acc{border-color:rgba(181,245,66,0.3);color:var(--accent)}
-.btn-ghost-acc:hover{background:var(--accent-d)}
-.btn-danger{border-color:rgba(248,113,113,0.3);color:var(--danger)}
-.btn-danger:hover{background:rgba(248,113,113,0.06)}
-.btn-warn{border-color:rgba(251,191,36,0.3);color:var(--warn)}
-.btn-warn:hover{background:rgba(251,191,36,0.06)}
-.btn-row{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.camp-tab:hover{border-color:var(--border2)}
+.camp-tab.on.value{border-color:var(--accent);background:var(--accent-d2)}
+.camp-tab.on.profit{border-color:var(--purple);background:var(--purple-d)}
+.camp-tab-icon{font-size:20px;margin-bottom:8px}
+.camp-tab-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.camp-tab.on.value .camp-tab-name{color:var(--accent)}
+.camp-tab.on.profit .camp-tab-name{color:var(--purple)}
+.camp-tab-desc{font-size:11px;color:var(--t2);line-height:1.4}
 
-/* SPINNER */
-.spin{
-  width:12px;height:12px;border-radius:50%;
-  border:2px solid rgba(12,12,14,0.25);border-top-color:#0c0c0e;
-  animation:sp 0.65s linear infinite;display:inline-block;
-}
-.spin-l{border-color:var(--border);border-top-color:var(--accent)}
-@keyframes sp{to{transform:rotate(360deg)}}
+/* ── STATUS BADGE ── */
+.status{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:0.05em}
+.status-draft{background:var(--s3);color:var(--t2)}
+.status-ready{background:var(--blue-d);color:var(--blue);border:1px solid rgba(96,165,250,0.2)}
+.status-active{background:var(--green-d);color:var(--green);border:1px solid rgba(74,222,128,0.2)}
+.status-done{background:var(--s3);color:var(--t3)}
+.status-value{background:var(--accent-d);color:var(--accent);border:1px solid rgba(212,245,60,0.2)}
 
-/* OUTPUT */
-.outbox{
+/* ── MAIL TILES ── */
+.mail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:12px}
+.mail-tile{
   background:var(--s2);border:1px solid var(--border);
-  border-radius:var(--r-sm);padding:11px 13px;
-  font-size:13px;line-height:1.7;color:var(--text);
-  white-space:pre-wrap;font-family:'Lora',serif;
-  margin-bottom:10px;min-height:44px;
+  border-radius:var(--r);padding:12px;cursor:pointer;
+  transition:all 0.15s;position:relative;overflow:hidden;
 }
-.outbox.empty{color:var(--t3);font-style:italic;font-family:'DM Mono',monospace;font-size:12px}
+.mail-tile:hover{border-color:var(--border3);background:var(--s3);transform:translateY(-1px)}
+.mail-tile.approved{border-color:rgba(74,222,128,0.3)}
+.mail-tile.pending{border-color:rgba(251,191,36,0.3)}
+.mail-num{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-bottom:6px}
+.mail-subject{font-size:12px;font-weight:600;line-height:1.35;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mail-preview{font-size:11px;color:var(--t2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-family:'Fraunces',serif;font-style:italic}
+.mail-tile-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.mail-date{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3)}
+.mail-approve-dot{width:6px;height:6px;border-radius:50%;background:var(--yellow)}
+.mail-approve-dot.ok{background:var(--green)}
 
-/* SUBJECT OPTIONS */
-.subj-opts{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.subj-opt{
-  display:flex;align-items:flex-start;gap:9px;
-  padding:9px 11px;border:1px solid var(--border);
-  border-radius:var(--r-sm);cursor:pointer;
-  font-size:13px;color:var(--t2);background:var(--s2);
-  transition:all 0.12s;line-height:1.4;
+/* ── CAMPAIGN LIST ── */
+.camp-list{display:flex;flex-direction:column;gap:8px}
+.camp-item{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:all 0.15s;
 }
+.camp-item:hover{border-color:var(--border2);background:var(--s2)}
+.camp-item-ico{width:36px;height:36px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.camp-item-info{flex:1;min-width:0}
+.camp-item-name{font-size:13px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.camp-item-meta{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.camp-item-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* ── PIPELINE STAGES ── */
+.pipe-stages{display:flex;flex-direction:column;gap:0}
+.pipe-row{display:flex;gap:0;align-items:stretch}
+.pipe-gutter{display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0;padding-top:16px}
+.pnode{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);flex-shrink:0;transition:all 0.25s;position:relative}
+.pnode.ai{border-color:var(--blue);background:var(--blue-d)}
+.pnode.human{border-color:var(--orange);background:var(--orange-d)}
+.pnode.done{border-color:var(--accent);background:var(--accent-d)}
+.pnode.done::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:7px;color:var(--accent);font-weight:700}
+.pline{width:1px;background:var(--border);flex:1;min-height:10px}
+.pcard{flex:1;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);margin-bottom:7px;overflow:hidden;transition:border-color 0.15s}
+.pcard:hover{border-color:var(--border2)}
+.pcard.exp{border-color:rgba(212,245,60,0.2)}
+.pcard.skip{opacity:0.2;pointer-events:none}
+.phead{padding:12px 15px;display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.pbadge{font-size:9px;font-weight:700;letter-spacing:0.07em;padding:3px 7px;border-radius:100px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.pb-ai{background:var(--blue-d);color:var(--blue);border:1px solid rgba(96,165,250,0.2)}
+.pb-human{background:var(--orange-d);color:var(--orange);border:1px solid rgba(251,146,60,0.2)}
+.pname{font-size:12px;font-weight:600;flex:1;min-width:0}
+.parr{font-size:10px;color:var(--t3);transition:transform 0.15s;flex-shrink:0}
+.parr.open{transform:rotate(180deg)}
+.pbody{display:none;padding:0 15px 15px;border-top:1px solid var(--border)}
+.pbody.open{display:block}
+.pdesc{font-size:12px;color:var(--t2);line-height:1.6;padding:10px 0 12px;font-family:'Fraunces',serif;font-style:italic}
+
+/* ── OUTPUT BOX ── */
+.outbox{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;line-height:1.7;color:var(--text);white-space:pre-wrap;font-family:'Fraunces',serif;margin-bottom:8px;min-height:40px}
+.outbox.empty{color:var(--t3);font-style:italic;font-family:'JetBrains Mono',monospace;font-size:11px}
+
+/* ── SUBJECT OPTIONS ── */
+.subj-opts{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.subj-opt{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:12px;color:var(--t2);background:var(--s2);transition:all 0.1s}
 .subj-opt:hover{border-color:var(--border2);color:var(--text)}
 .subj-opt.chosen{border-color:var(--accent);color:var(--accent);background:var(--accent-d2)}
-.subj-n{font-size:10px;font-family:'DM Mono',monospace;color:var(--t3);min-width:14px;padding-top:1px}
+.subj-n{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--t3);min-width:12px;padding-top:1px}
 
-/* STRIPS */
-.ok-strip{
-  background:rgba(134,239,172,0.07);border:1px solid rgba(134,239,172,0.2);
-  border-radius:var(--r-sm);padding:9px 13px;
-  font-size:13px;color:var(--success);
-  display:flex;align-items:center;gap:8px;margin-top:10px;
-}
-.warn-strip{
-  background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);
-  border-radius:var(--r-sm);padding:9px 13px;
-  font-size:13px;color:var(--warn);
-  display:flex;align-items:center;gap:8px;margin-top:10px;
-}
-.err-strip{
-  background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);
-  border-radius:var(--r-sm);padding:9px 13px;
-  font-size:13px;color:var(--danger);
-  display:flex;align-items:center;gap:8px;margin-top:10px;
-}
+/* ── STRIPS ── */
+.ok-s{background:var(--green-d);border:1px solid rgba(74,222,128,0.2);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px;margin-top:8px}
+.warn-s{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--yellow);display:flex;align-items:center;gap:6px;margin-top:8px}
+.err-s{background:var(--red-d);border:1px solid rgba(248,113,113,0.2);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--red);display:flex;align-items:center;gap:6px;margin-top:8px}
 
-/* ─── SIDEBAR PANELS ─── */
-.panel{
-  background:var(--s1);border:1px solid var(--border);
-  border-radius:var(--r);overflow:hidden;margin-bottom:14px;
-}
-.panel-head{
-  padding:12px 16px;border-bottom:1px solid var(--border);
-  font-size:10px;font-weight:700;letter-spacing:0.08em;
-  text-transform:uppercase;color:var(--t3);
-  font-family:'DM Mono',monospace;display:flex;align-items:center;gap:8px;
-}
-.panel-body{padding:14px 16px}
-.mini-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em}
-.mini-val{font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.5}
-.mini-val:last-child{margin-bottom:0}
+/* ── SPINNER ── */
+.spin{width:11px;height:11px;border-radius:50%;border:2px solid rgba(10,10,11,0.2);border-top-color:#0a0a0b;animation:sp 0.6s linear infinite;display:inline-block;flex-shrink:0}
+.spin-l{border-color:var(--border2);border-top-color:var(--accent)}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-/* PROGRESS STEPS */
-.prog-steps{display:flex;flex-direction:column;gap:4px}
-.pstep{
-  display:flex;align-items:center;gap:8px;
-  padding:6px 8px;border-radius:6px;
-  font-size:12px;color:var(--t3);
-}
-.pstep.cur{background:var(--accent-d2);color:var(--accent)}
-.pstep.done{color:var(--t2)}
-.pdot{width:5px;height:5px;border-radius:50%;background:var(--t3);flex-shrink:0}
-.pstep.cur .pdot{background:var(--accent)}
-.pstep.done .pdot{background:var(--success)}
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;padding:24px;position:relative}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px}
+.modal-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-0.01em}
+.modal-close{font-size:16px;color:var(--t3);cursor:pointer;padding:4px;border-radius:4px;flex-shrink:0}
+.modal-close:hover{color:var(--text);background:var(--s2)}
+.modal-section{margin-bottom:16px}
+.modal-section-title{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:8px}
 
-/* MAIL PREVIEW */
-.prev-subj{
-  font-size:13px;font-weight:600;color:var(--ai);
-  padding:8px 10px;background:var(--s2);border-radius:var(--r-xs);
-  margin-bottom:10px;font-family:'DM Mono',monospace;
-}
-.prev-body{
-  font-size:12px;line-height:1.7;color:var(--t2);
-  white-space:pre-wrap;font-family:'Lora',serif;
-  max-height:200px;overflow-y:auto;
-}
+/* ── MAIL PREVIEW MODAL ── */
+.mail-preview-tabs{display:flex;gap:4px;margin-bottom:12px}
+.mp-tab{padding:5px 12px;border-radius:var(--r-xs);font-size:11px;font-weight:600;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--t2)}
+.mp-tab.on{background:var(--s2);border-color:var(--border2);color:var(--text)}
+.mp-content{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px;min-height:200px;font-size:13px;line-height:1.7}
+.mp-content.rendered{background:#ffffff;color:#1a1a1a}
+.mp-html{font-family:Georgia,serif}
 
-/* RECIPIENTS */
-.recip-list{
-  max-height:160px;overflow-y:auto;
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:var(--r-sm);padding:8px;
-  margin-bottom:8px;
-}
-.recip-item{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:4px 6px;font-size:12px;color:var(--t2);
-  font-family:'DM Mono',monospace;border-radius:4px;
-}
-.recip-item:hover{background:var(--s3)}
-.recip-del{cursor:pointer;color:var(--t3);font-size:11px;padding:2px 5px;border-radius:3px}
-.recip-del:hover{color:var(--danger);background:rgba(248,113,113,0.1)}
+/* ── WINDOW ── */
+.win-row{display:flex;gap:12px}
+.win-field{flex:1}
 
-/* ─── SEKCJA SMTP ─── */
-.smtp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.smtp-full{grid-column:1/-1}
-.dkim-box{
-  background:var(--s2);border:1px solid var(--border);
-  border-radius:var(--r);padding:16px;margin-top:8px;
-}
-.dkim-title{font-size:13px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.dkim-desc{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:12px;font-family:'Lora',serif;font-style:italic}
-.code-block{
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--r-xs);padding:10px 12px;
-  font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);
-  white-space:pre;overflow-x:auto;margin:8px 0;
-}
-.step-num{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:20px;height:20px;border-radius:50%;
-  background:var(--s3);font-size:11px;font-weight:700;
-  color:var(--t2);flex-shrink:0;font-family:'DM Mono',monospace;
-}
-.setup-step{
-  display:flex;gap:10px;align-items:flex-start;
-  padding:10px 0;border-bottom:1px solid var(--border);
-}
-.setup-step:last-child{border-bottom:none}
-.setup-step-content{flex:1;font-size:13px;color:var(--t2);line-height:1.5}
-.setup-step-content strong{color:var(--text);font-weight:600}
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.stat-num{font-size:24px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);margin-bottom:3px}
+.stat-label{font-size:11px;color:var(--t3)}
+.stat-change{font-size:10px;margin-top:4px;font-family:'JetBrains Mono',monospace}
+.stat-up{color:var(--green)}
+.stat-down{color:var(--red)}
 
-/* ─── HISTORIA ─── */
-.sec-header{margin-bottom:24px}
-.sec-title{font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
-.sec-sub{font-size:13px;color:var(--t2);font-family:'Lora',serif;font-style:italic}
-.hist-list{display:flex;flex-direction:column;gap:8px}
-.hist-item{
-  background:var(--s1);border:1px solid var(--border);
-  border-radius:var(--r);padding:14px 18px;
-  display:flex;align-items:center;gap:14px;
-  transition:border-color 0.15s;
-}
-.hist-item:hover{border-color:var(--border2)}
-.hist-ico{
-  width:34px;height:34px;border-radius:8px;
-  background:var(--s2);display:flex;align-items:center;
-  justify-content:center;font-size:15px;flex-shrink:0;
-}
-.hist-info{flex:1;min-width:0}
-.hist-subj{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
-.hist-meta{font-size:11px;color:var(--t3);font-family:'DM Mono',monospace}
-.htag{
-  font-size:10px;font-weight:700;letter-spacing:0.06em;
-  text-transform:uppercase;padding:3px 8px;border-radius:100px;
-  font-family:'DM Mono',monospace;flex-shrink:0;
-}
-.tag-std{background:var(--accent-d);color:var(--accent)}
-.tag-promo{background:var(--human-d);color:var(--human)}
+/* ── CTA SECTION ── */
+.cta-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.cta-item{display:flex;align-items:center;gap:8px}
+.cta-item input{flex:1}
+.cta-remove{color:var(--t3);cursor:pointer;font-size:12px;padding:4px 6px;border-radius:4px;flex-shrink:0}
+.cta-remove:hover{color:var(--red);background:var(--red-d)}
 
-.empty-state{
-  text-align:center;padding:60px 20px;
-  color:var(--t3);font-family:'DM Mono',monospace;font-size:12px;
-  border:1px dashed var(--border);border-radius:var(--r);
-  line-height:1.8;
-}
-
-/* ─── TOAST ─── */
-.toast{
-  position:fixed;bottom:24px;right:24px;
-  background:var(--s2);border:1px solid var(--border2);
-  border-radius:var(--r-sm);padding:11px 16px;
-  font-size:13px;color:var(--text);z-index:1000;
-  transform:translateY(16px);opacity:0;
-  transition:all 0.25s;pointer-events:none;
-  max-width:300px;line-height:1.4;
-}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--s2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:10px 16px;font-size:12px;color:var(--text);z-index:500;transform:translateY(12px);opacity:0;transition:all 0.2s;pointer-events:none;max-width:280px}
 .toast.on{transform:translateY(0);opacity:1}
-.toast.acc{border-color:rgba(181,245,66,0.4);color:var(--accent)}
-.toast.err{border-color:rgba(248,113,113,0.35);color:var(--danger)}
+.toast.ok{border-color:rgba(74,222,128,0.4);color:var(--green)}
+.toast.err{border-color:rgba(248,113,113,0.35);color:var(--red)}
 
-/* BAZA GRID */
-.baza-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.baza-full{grid-column:1/-1}
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;background:var(--s2);border-radius:var(--r-sm);padding:3px;margin-bottom:16px;width:fit-content}
+.tab-btn{padding:5px 14px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;color:var(--t2);transition:all 0.12s;background:transparent;border:none;font-family:'Space Grotesk',sans-serif}
+.tab-btn.on{background:var(--s1);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.3)}
 
-/* SEPARATOR */
+/* ── DIVIDER ── */
 .sep{height:1px;background:var(--border);margin:16px 0}
 
-/* TAGS ROW */
-.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
-.tag{font-size:11px;padding:3px 9px;border-radius:100px;border:1px solid var(--border);color:var(--t2)}
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 20px;color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:12px;border:1px dashed var(--border);border-radius:var(--r);line-height:1.8}
 
-/* ANIMATE */
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.scard{animation:fadeUp 0.25s ease both}
+/* ── PROGRESS BAR ── */
+.pbar-wrap{height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0}
+.pbar{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s}
+
+/* ── ANIM ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.pcard{animation:fadeUp 0.2s ease both}
+.mail-tile{animation:fadeUp 0.2s ease both}
+.camp-item{animation:fadeUp 0.2s ease both}
 </style>
 </head>
 <body>
-
 <div class="shell">
+
 <!-- SIDEBAR -->
 <aside>
   <div class="logo">
-    <div class="logo-name">Mail<span>Flow</span></div>
-    <div class="logo-tag">AI EMAIL PIPELINE</div>
+    <div class="logo-text">Mail<span>Flow</span></div>
+    <div class="logo-sub">v2.0 · EMAIL OS</div>
   </div>
   <nav>
-    <div class="nav-section">Główne</div>
-    <div class="nav-item active" onclick="goTo('pipeline',this)">
-      <span class="nav-icon">⚡</span> Pipeline
-      <span class="nav-badge" id="badge-pipeline"></span>
+    <div class="nav-group">
+      <div class="nav-label">Kampanie</div>
+      <div class="nav-item on" data-nav="dashboard" onclick="nav('dashboard',this)"><span class="nav-ico">◈</span> Dashboard</div>
+      <div class="nav-item" data-nav="value" onclick="nav('value',this)"><span class="nav-ico">♾</span> Value <span class="nav-badge" id="nb-value"></span></div>
+      <div class="nav-item" data-nav="profit" onclick="nav('profit',this)"><span class="nav-ico">⚡</span> Profit <span class="nav-badge" id="nb-profit"></span></div>
     </div>
-    <div class="nav-item" onclick="goTo('historia',this)">
-      <span class="nav-icon">📋</span> Historia
+    <div class="nav-group">
+      <div class="nav-label">Generowanie</div>
+      <div class="nav-item" data-nav="pipeline" onclick="nav('pipeline',this)"><span class="nav-ico">✦</span> Pipeline AI <span class="nav-badge" id="nb-pipe"></span></div>
     </div>
-    <div class="nav-section">Konfiguracja</div>
-    <div class="nav-item" onclick="goTo('baza',this)">
-      <span class="nav-icon">🗄</span> Baza wiedzy
-    </div>
-    <div class="nav-item" onclick="goTo('lista',this)">
-      <span class="nav-icon">👥</span> Lista odbiorców
-    </div>
-    <div class="nav-item" onclick="goTo('smtp',this)">
-      <span class="nav-icon">⚙️</span> SMTP / DKIM
+    <div class="nav-group">
+      <div class="nav-label">Zarządzanie</div>
+      <div class="nav-item" data-nav="lista" onclick="nav('lista',this)"><span class="nav-ico">👥</span> Lista</div>
+      <div class="nav-item" data-nav="baza" onclick="nav('baza',this)"><span class="nav-ico">🗄</span> Baza wiedzy</div>
+      <div class="nav-item" data-nav="api" onclick="nav('api',this)"><span class="nav-ico">⚙</span> Resend API</div>
+      <div class="nav-item" data-nav="mailerlite" onclick="nav('mailerlite',this)"><span class="nav-ico">◉</span> MailerLite <span class="nav-badge" id="nb-ml"></span></div>
     </div>
   </nav>
-  <div class="sidebar-foot">
-    <div class="api-status">
-      <div class="pulse" id="smtp-pulse"></div>
-      <span id="smtp-status-text">SMTP nie skonfigurowany</span>
-    </div>
+  <div class="aside-foot">
+    <div class="status-row"><div class="dot" id="api-dot"></div><span id="api-status">API nie skonfigurowane</span></div>
   </div>
 </aside>
 
 <!-- MAIN -->
 <main>
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title" id="page-title">Pipeline</div>
-      <div class="topbar-sub" id="page-sub">AI generuje → Ty audytujesz → Wysyłka SMTP</div>
+    <div class="topbar-l">
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-sub" id="page-sub">Przegląd kampanii</div>
     </div>
-    <div class="chips">
-      <div class="chip"><span class="chip-n" id="m-etap">1/6</span><span class="chip-l">etap</span></div>
-      <div class="chip"><span class="chip-n" id="m-pending">0</span><span class="chip-l">audyt</span></div>
-      <div class="chip"><span class="chip-n" id="m-done">0</span><span class="chip-l">wysłane</span></div>
-      <div class="chip"><span class="chip-n" id="m-recip">0</span><span class="chip-l">odbiorców</span></div>
+    <div class="topbar-r">
+      <div class="chip"><span class="chip-n" id="c-value">0</span><span class="chip-l">value</span></div>
+      <div class="chip"><span class="chip-n" id="c-profit">0</span><span class="chip-l">profit</span></div>
+      <div class="chip"><span class="chip-n" id="c-recip">0</span><span class="chip-l">odbiorców</span></div>
     </div>
   </div>
 
-  <div class="content">
+  <div class="view">
 
-  <!-- ─── PIPELINE ─── -->
-  <div id="sec-pipeline" class="sec on">
-    <div class="pipeline-wrap">
-      <div class="stages" id="stages"></div>
+  <!-- DASHBOARD -->
+  <div id="sec-dashboard" class="sec on">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="st-total">0</div><div class="stat-label">Maili wysłanych</div></div>
+      <div class="stat-card"><div class="stat-num" id="st-value">0</div><div class="stat-label">Kampanie Value</div></div>
+      <div class="stat-card"><div class="stat-num" id="st-profit">0</div><div class="stat-label">Kampanie Profit</div></div>
+      <div class="stat-card"><div class="stat-num" id="st-recip">0</div><div class="stat-label">Odbiorców</div></div>
+    </div>
+    <div class="sh">
+      <div class="sh-l"><div class="sh-title">Szybkie akcje</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px">
+      <div class="card clickable" onclick="nav('pipeline',document.querySelector('[data-nav=pipeline]'))">
+        <div style="font-size:24px;margin-bottom:8px">✦</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px">Generuj nowy mail</div>
+        <div style="font-size:11px;color:var(--t2)">AI tworzy pomysł → tytuły → treść</div>
+      </div>
+      <div class="card clickable" onclick="openNewCampaignModal()">
+        <div style="font-size:24px;margin-bottom:8px">+</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px">Nowa kampania</div>
+        <div style="font-size:11px;color:var(--t2)">Value (evergreen) lub Profit (launch)</div>
+      </div>
+    </div>
+    <div class="sh"><div class="sh-l"><div class="sh-title">Ostatnia aktywność</div></div></div>
+    <div id="dash-activity" class="camp-list"></div>
+  </div>
+
+  <!-- VALUE CAMPAIGNS -->
+  <div id="sec-value" class="sec">
+    <div class="sh">
+      <div class="sh-l">
+        <div class="sh-title">Kampanie Value</div>
+        <div class="sh-sub">evergreen · ciągła wysyłka · kolejka maili</div>
+      </div>
+      <div class="sh-r">
+        <button class="btn btn-acc" onclick="openNewCampaignModal('value')">+ Nowa kampania</button>
+      </div>
+    </div>
+    <div id="value-list" class="camp-list"></div>
+  </div>
+
+  <!-- PROFIT CAMPAIGNS -->
+  <div id="sec-profit" class="sec">
+    <div class="sh">
+      <div class="sh-l">
+        <div class="sh-title">Kampanie Profit</div>
+        <div class="sh-sub">launchowe · okno sprzedażowe · sekwencja</div>
+      </div>
+      <div class="sh-r">
+        <button class="btn btn-acc" onclick="openNewCampaignModal('profit')">+ Nowa kampania</button>
+      </div>
+    </div>
+    <div id="profit-list" class="camp-list"></div>
+  </div>
+
+  <!-- PIPELINE AI -->
+  <div id="sec-pipeline" class="sec">
+    <div class="sh">
+      <div class="sh-l">
+        <div class="sh-title">Pipeline AI</div>
+        <div class="sh-sub">AI generuje → Ty audytujesz → przypisz do kampanii</div>
+      </div>
+      <div class="sh-r">
+        <button class="btn" onclick="resetPipeline()">↺ Reset</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start">
+      <div class="pipe-stages" id="pipe-stages"></div>
       <div>
-        <!-- PROGRESS -->
-        <div class="panel">
-          <div class="panel-head">📍 Postęp</div>
-          <div class="panel-body"><div class="prog-steps" id="prog-steps"></div></div>
+        <div class="card" style="margin-bottom:10px">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em">Postęp</div>
+          <div id="pipe-prog"></div>
         </div>
-        <!-- BAZA PREVIEW -->
-        <div class="panel">
-          <div class="panel-head">🗄 Baza wiedzy</div>
-          <div class="panel-body" id="baza-prev">
-            <div style="font-size:12px;color:var(--t3);font-family:'DM Mono',monospace">Uzupełnij zakładkę "Baza wiedzy"</div>
-          </div>
+        <div class="card" id="pipe-preview-card" style="display:none">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">Podgląd</div>
+          <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:4px">SUBJECT</div>
+          <div id="pipe-prev-subj" style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:10px;line-height:1.4"></div>
+          <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:4px">TREŚĆ</div>
+          <div id="pipe-prev-body" style="font-size:11px;color:var(--t2);line-height:1.6;white-space:pre-wrap;font-family:'Fraunces',serif;font-style:italic;max-height:180px;overflow-y:auto"></div>
         </div>
-        <!-- MAIL PREVIEW -->
-        <div class="panel" id="mail-prev-panel" style="display:none">
-          <div class="panel-head">✉ Podgląd maila</div>
-          <div class="panel-body">
-            <div class="mini-label">Subject</div>
-            <div class="prev-subj" id="prev-subj">—</div>
-            <div class="mini-label">Treść</div>
-            <div class="prev-body" id="prev-body">—</div>
+        <div class="card" id="pipe-assign-card" style="display:none;margin-top:10px">
+          <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">Przypisz do kampanii</div>
+          <div class="field">
+            <label class="flbl">Kampania</label>
+            <select id="pipe-assign-camp"></select>
           </div>
-        </div>
-        <!-- WYSYŁKA QUICK -->
-        <div class="panel" id="send-panel" style="display:none">
-          <div class="panel-head">🚀 Wysyłka</div>
-          <div class="panel-body">
-            <div class="mini-label">Odbiorcy</div>
-            <div class="mini-val" id="recip-count-info">0 adresów</div>
-            <div class="mini-label">SMTP</div>
-            <div class="mini-val" id="smtp-info-mini">Nie skonfigurowany</div>
-            <button class="btn btn-acc" style="width:100%" id="quick-send-btn" onclick="quickSend()">
-              Wyślij broadcast →
-            </button>
-            <button class="btn btn-warn" style="width:100%;margin-top:6px" id="test-send-btn" onclick="sendTest()">
-              Wyślij test na swój email
-            </button>
-            <div id="send-result"></div>
-          </div>
+          <button class="btn btn-acc" style="width:100%" onclick="assignToCampaign()">Przypisz mail ✓</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ─── BAZA ─── -->
-  <div id="sec-baza" class="sec">
-    <div class="sec-header">
-      <div class="sec-title">Baza wiedzy</div>
-      <div class="sec-sub">Fundament każdego maila. AI zawsze tutaj zagląda przed generowaniem.</div>
-    </div>
-    <div class="baza-grid">
-      <div class="field">
-        <label class="flabel">Nazwa firmy / marki</label>
-        <input type="text" id="b-firma" placeholder="Np. SocialFlow">
-      </div>
-      <div class="field">
-        <label class="flabel">Częstotliwość wysyłki</label>
-        <select id="b-freq">
-          <option value="codziennie">Codziennie</option>
-          <option value="3x w tygodniu">3x w tygodniu</option>
-          <option value="1x w tygodniu">1x w tygodniu</option>
-        </select>
-      </div>
-      <div class="field baza-full">
-        <label class="flabel">Produkt / oferta</label>
-        <textarea id="b-produkt" rows="3" placeholder="Np. Kurs online o relacjach i komunikacji. 9 modułów. Cena standard 1477 zł, promo 997 zł maks 1x/kwartał."></textarea>
-      </div>
-      <div class="field baza-full">
-        <label class="flabel">Buyer persona</label>
-        <textarea id="b-persona" rows="3" placeholder="Np. Kobiety 28-45, singlki lub w związkach z problemami komunikacyjnymi. Czują się niezrozumiane. Szukają głębszych, autentycznych relacji. Boją się odrzucenia."></textarea>
-      </div>
-      <div class="field">
-        <label class="flabel">USP</label>
-        <textarea id="b-usp" rows="2" placeholder="Np. Konkretne techniki, nie teoria. Efekty po 2 tygodniach."></textarea>
-      </div>
-      <div class="field">
-        <label class="flabel">Główne bóle klienta</label>
-        <textarea id="b-bole" rows="2" placeholder="Np. Samotność, brak rozumienia w związku, strach przed odrzuceniem."></textarea>
-      </div>
-      <div class="field baza-full">
-        <label class="flabel">Ton komunikacji</label>
-        <textarea id="b-ton" rows="2" placeholder="Np. Ludzki, szczery, nieperfekcyjny — jak pracownik piszący po godzinach. Nie korporacyjnie. Czasem śmieszny, czasem prowokacyjny, czasem wzruszający."></textarea>
-      </div>
-      <div class="field baza-full">
-        <label class="flabel">Ceny (Omnibus — najniższa cena z 30 dni)</label>
-        <textarea id="b-ceny" rows="2" placeholder="Np. Cena standard: 1477 zł. Cena promo: 997 zł. Najniższa z 30 dni przy promocji = 1477 zł."></textarea>
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-acc" onclick="saveBaza()">Zapisz bazę ✓</button>
-    </div>
-    <div id="baza-ok" class="ok-strip" style="display:none">✓ Baza zapisana — wróć do Pipeline.</div>
-  </div>
-
-  <!-- ─── LISTA ODBIORCÓW ─── -->
+  <!-- LISTA -->
   <div id="sec-lista" class="sec">
-    <div class="sec-header">
-      <div class="sec-title">Lista odbiorców</div>
-      <div class="sec-sub">Adresy email do których trafi każdy broadcast.</div>
+    <div class="sh">
+      <div class="sh-l"><div class="sh-title">Lista odbiorców</div><div class="sh-sub">adresy email do broadcastów</div></div>
     </div>
-    <div class="field">
-      <label class="flabel">Dodaj adresy (jeden na linię lub oddzielone przecinkami)</label>
-      <textarea id="recip-input" rows="5" placeholder="jan@example.com&#10;anna@example.com&#10;marek@example.com"></textarea>
+    <div class="field"><label class="flbl">Dodaj adresy (jeden na linię lub oddzielone przecinkami)</label><textarea id="recip-input" rows="4" placeholder="jan@example.com&#10;anna@example.com"></textarea></div>
+    <div class="btn-row" style="margin-bottom:14px">
+      <button class="btn btn-acc" onclick="addRecipients()">Dodaj</button>
+      <button class="btn" onclick="document.getElementById('csv-inp').click()">Import CSV</button>
+      <button class="btn btn-red" onclick="clearRecipients()">Wyczyść</button>
+      <input type="file" id="csv-inp" accept=".csv,.txt" style="display:none" onchange="handleCSV(event)">
     </div>
-    <div class="btn-row" style="margin-bottom:16px">
-      <button class="btn btn-acc" onclick="addRecipients()">Dodaj do listy</button>
-      <button class="btn" onclick="clearRecipients()">Wyczyść listę</button>
-      <button class="btn" onclick="importCSV()">Import CSV</button>
-      <input type="file" id="csv-input" accept=".csv,.txt" style="display:none" onchange="handleCSV(event)">
-    </div>
-    <div class="mini-label" id="recip-count-label">Lista: 0 adresów</div>
-    <div class="recip-list" id="recip-list"></div>
+    <div style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);margin-bottom:6px" id="recip-label">Lista: 0 adresów</div>
+    <div id="recip-list" style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px;max-height:320px;overflow-y:auto"></div>
   </div>
 
-  <!-- ─── SMTP / DKIM ─── -->
-  <div id="sec-smtp" class="sec">
-    <div class="sec-header">
-      <div class="sec-title">SMTP / DKIM</div>
-      <div class="sec-sub">Konfiguracja serwera sehosta + podpis DKIM dla lepszej dostarczalności.</div>
+  <!-- BAZA -->
+  <div id="sec-baza" class="sec">
+    <div class="sh"><div class="sh-l"><div class="sh-title">Baza wiedzy</div><div class="sh-sub">fundament każdego maila generowanego przez AI</div></div></div>
+    <div class="form-grid">
+      <div class="field"><label class="flbl">Nazwa firmy / marki</label><input type="text" id="b-firma" placeholder="np. SocialFlow"></div>
+      <div class="field"><label class="flbl">Częstotliwość wysyłki</label><select id="b-freq"><option>Codziennie</option><option>3x w tygodniu</option><option>1x w tygodniu</option></select></div>
+      <div class="field form-full"><label class="flbl">Produkt / oferta</label><textarea id="b-produkt" rows="2" placeholder="Kurs online, cena standard 1477 zł, promo 997 zł maks 1x/kwartał"></textarea></div>
+      <div class="field form-full"><label class="flbl">Buyer persona</label><textarea id="b-persona" rows="2" placeholder="Kobiety 28-45, problemy z relacjami, szukają głębokich połączeń..."></textarea></div>
+      <div class="field"><label class="flbl">USP</label><textarea id="b-usp" rows="2" placeholder="Konkretne techniki, efekty po 2 tyg."></textarea></div>
+      <div class="field"><label class="flbl">Główne bóle klienta</label><textarea id="b-bole" rows="2" placeholder="Samotność, strach przed odrzuceniem..."></textarea></div>
+      <div class="field form-full"><label class="flbl">Ton komunikacji</label><textarea id="b-ton" rows="2" placeholder="Ludzki, szczery, jak pracownik po godzinach. Nie korporacyjnie."></textarea></div>
+      <div class="field form-full"><label class="flbl">Ceny / Omnibus</label><textarea id="b-ceny" rows="2" placeholder="Standard: 1477 zł. Promo: 997 zł. Najniższa z 30 dni: 1477 zł."></textarea></div>
     </div>
+    <div class="btn-row"><button class="btn btn-acc" onclick="saveBaza()">Zapisz bazę ✓</button></div>
+    <div id="baza-ok" class="ok-s" style="display:none">✓ Baza zapisana</div>
+  </div>
 
-    <!-- INSTRUKCJA -->
-    <div class="dkim-box" style="margin-bottom:20px">
-      <div class="dkim-title">🔧 Jak skonfigurować na sehoście (krok po kroku)</div>
-      <div class="dkim-desc">Wykonaj te kroki raz — potem appka sama wysyła maile przez Twój serwer.</div>
-
-      <div class="setup-step">
-        <div class="step-num">1</div>
-        <div class="setup-step-content">
-          <strong>Zaloguj się do panelu sehosta</strong> (DirectAdmin lub cPanel) i przejdź do <strong>Poczta → Zarządzaj kontami email</strong>. Utwórz skrzynkę np. <code style="font-family:'DM Mono',monospace;color:var(--accent)">newsletter@twojadomena.pl</code>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">2</div>
-        <div class="setup-step-content">
-          <strong>Dane SMTP sehosta:</strong><br>
-          Host: <code style="font-family:'DM Mono',monospace;color:var(--accent)">mail.twojadomena.pl</code><br>
-          Port: <code style="font-family:'DM Mono',monospace;color:var(--accent)">587</code> (STARTTLS) lub <code style="font-family:'DM Mono',monospace;color:var(--accent)">465</code> (SSL)<br>
-          Login: pełny adres email skrzynki
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">3</div>
-        <div class="setup-step-content">
-          <strong>DKIM</strong> — w panelu sehosta znajdź <strong>DNS → DKIM</strong> i włącz. Pobierz klucz prywatny i wklej poniżej. Rekord DNS TXT zostanie dodany automatycznie lub zrobisz to ręcznie:<br>
-          <code style="font-family:'DM Mono',monospace;color:var(--accent)">mail._domainkey.twojadomena.pl → "v=DKIM1; k=rsa; p=KLUCZ"</code>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">4</div>
-        <div class="setup-step-content">
-          <strong>Backend API</strong> — wgraj folder <code style="font-family:'DM Mono',monospace;color:var(--accent)">mailflow-backend</code> na serwer i uruchom:<br>
-          <div class="code-block">npm install
-cp .env.example .env
-nano .env          # uzupełnij dane
-npm install -g pm2
-pm2 start ecosystem.config.js
-pm2 save</div>
-          API będzie dostępne na <code style="font-family:'DM Mono',monospace;color:var(--accent)">http://IP_SERWERA:3001</code>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">5</div>
-        <div class="setup-step-content">
-          <strong>Firewall</strong> — odblokuj port 3001 na serwerze:<br>
-          <div class="code-block">ufw allow 3001/tcp</div>
-          Opcjonalnie: ustaw nginx jako reverse proxy żeby API było na <code style="font-family:'DM Mono',monospace;color:var(--accent)">api.twojadomena.pl</code>
-        </div>
-      </div>
+  <!-- API CONFIG -->
+  <div id="sec-api" class="sec">
+    <div class="sh"><div class="sh-l"><div class="sh-title">Resend API</div><div class="sh-sub">konfiguracja wysyłki — domena adspice.pl z DKIM</div></div></div>
+    <div class="card" style="margin-bottom:16px;border-color:rgba(74,222,128,0.2);background:var(--green-d)">
+      <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:4px">✓ Domena adspice.pl — DKIM zweryfikowany</div>
+      <div style="font-size:11px;color:var(--t2)">SPF propaguje się — kilka minut. Resend gotowy do wysyłki.</div>
     </div>
-
-    <!-- FORMULARZ SMTP -->
-    <div class="smtp-grid">
-      <div class="field">
-        <label class="flabel">URL backendu API</label>
-        <input type="text" id="s-api" placeholder="http://IP:3001 lub https://api.domena.pl">
-      </div>
-      <div class="field">
-        <label class="flabel">Adres email nadawcy</label>
-        <input type="email" id="s-from-email" placeholder="newsletter@twojadomena.pl">
-      </div>
-      <div class="field">
-        <label class="flabel">Nazwa nadawcy</label>
-        <input type="text" id="s-from-name" placeholder="SocialFlow">
-      </div>
-      <div class="field">
-        <label class="flabel">Twój email (do testów)</label>
-        <input type="email" id="s-test-email" placeholder="ty@email.pl">
-      </div>
+    <div class="form-grid">
+      <div class="sep"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:10px;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em">◉ MAILERLITE</div>
+      <div class="field form-full"><label class="flbl">MailerLite API Key</label><input type="password" id="ml-key-stored" placeholder="eyJ..." oninput="DB.api.ml_key=this.value"><div style="font-size:10px;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace">mailerlite.com → Integracje → MailerLite API → Generuj token</div></div>
+      <div class="sep"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:10px;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em">✦ ANTHROPIC + RESEND</div>
+      <div class="field form-full"><label class="flbl">Anthropic API Key (do generowania AI)</label><input type="password" id="s-anthropic" placeholder="sk-ant-xxxxxxxxxxxxxxxxxxxxxxxx"><div style="font-size:10px;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace">Pobierz z console.anthropic.com → API Keys. Zapisywany tylko lokalnie.</div></div>
+      <div class="field form-full"><label class="flbl">Resend API Key (do wysyłki maili)</label><input type="password" id="s-key" placeholder="re_xxxxxxxxxxxxxxxxxxxxxxxx"><div style="font-size:10px;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace">Pobierz z resend.com → API Keys. Zapisywany tylko lokalnie.</div></div>
+      <div class="field"><label class="flbl">Adres nadawcy</label><input type="email" id="s-from" placeholder="newsletter@adspice.pl"></div>
+      <div class="field"><label class="flbl">Nazwa nadawcy</label><input type="text" id="s-name" placeholder="SocialFlow"></div>
+      <div class="field form-full"><label class="flbl">Twój email (testy)</label><input type="email" id="s-test" placeholder="ty@email.pl"></div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-acc" onclick="saveSmtp()">Zapisz konfigurację</button>
-      <button class="btn btn-warn" onclick="testConnection()">Test połączenia</button>
+      <button class="btn btn-acc" onclick="saveApi()">Zapisz ✓</button>
+      <button class="btn btn-ghost" onclick="testApi()">Wyślij testowego maila</button>
     </div>
-    <div id="smtp-test-result"></div>
+    <div id="api-result"></div>
   </div>
 
-  <!-- ─── HISTORIA ─── -->
-  <div id="sec-historia" class="sec">
-    <div class="sec-header">
-      <div class="sec-title">Historia maili</div>
-      <div class="sec-sub">Wszystkie zatwierdzone broadcasty.</div>
+  <!-- MAILERLITE -->
+  <div id="sec-mailerlite" class="sec">
+    <div class="sh">
+      <div class="sh-l"><div class="sh-title">MailerLite</div><div class="sh-sub">subskrybenci · statystyki · kampanie · grupy</div></div>
+      <div class="sh-r">
+        <button class="btn btn-ghost" onclick="mlSyncAll()"><span id="ml-sync-ico">↻</span> Sync teraz</button>
+      </div>
     </div>
-    <div class="hist-list" id="hist-list">
-      <div class="empty-state">Brak historii.<br>Wyślij pierwszy mail przez Pipeline.</div>
+
+    <!-- STATUS BAR -->
+    <div id="ml-status-bar" class="card" style="margin-bottom:16px;display:none">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:6px"><div class="dot ok"></div><span style="font-size:12px;color:var(--t2)">Połączono z MailerLite</span></div>
+        <div style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace" id="ml-account-info"></div>
+      </div>
+    </div>
+
+    <!-- BRAK KLUCZA -->
+    <div id="ml-no-key" class="card" style="margin-bottom:16px;border-color:rgba(248,113,113,0.2);background:var(--red-d)">
+      <div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:6px">Brak klucza MailerLite API</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Wejdź na mailerlite.com → Integracje → MailerLite API → wygeneruj klucz.</div>
+      <div class="field"><label class="flbl">MailerLite API Key</label><input type="password" id="ml-key-inline" placeholder="eyJ..."></div>
+      <div class="btn-row"><button class="btn btn-acc" onclick="saveMLKey()">Zapisz i połącz</button></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="ml-tabs" style="display:none">
+      <button class="tab-btn on" onclick="mlTab('subscribers',this)">Subskrybenci</button>
+      <button class="tab-btn" onclick="mlTab('campaigns',this)">Kampanie</button>
+      <button class="tab-btn" onclick="mlTab('groups',this)">Grupy</button>
+      <button class="tab-btn" onclick="mlTab('stats',this)">Statystyki</button>
+      <button class="tab-btn" onclick="mlTab('send',this)">Wyślij przez ML</button>
+    </div>
+
+    <!-- SUBSCRIBERS TAB -->
+    <div id="ml-tab-subscribers" style="display:none">
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+        <div class="stat-card"><div class="stat-num" id="ml-total-subs">—</div><div class="stat-label">Aktywni subskrybenci</div></div>
+        <div class="stat-card"><div class="stat-num" id="ml-unsub">—</div><div class="stat-label">Wypisani</div></div>
+        <div class="stat-card"><div class="stat-num" id="ml-unconf">—</div><div class="stat-label">Niepotwierdzone</div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" id="ml-sub-search" placeholder="Szukaj po emailu..." style="max-width:280px" oninput="mlFilterSubs(this.value)">
+        <button class="btn btn-ghost" onclick="mlImportToApp()">↓ Importuj do appki</button>
+      </div>
+      <div id="ml-subs-list" style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r-sm);max-height:400px;overflow-y:auto"></div>
+      <div id="ml-subs-pagination" style="display:flex;gap:8px;margin-top:10px;align-items:center">
+        <button class="btn btn-sm" id="ml-prev-btn" onclick="mlLoadSubs(mlState.subsPage-1)" disabled>← Poprzednia</button>
+        <span style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace" id="ml-page-info"></span>
+        <button class="btn btn-sm" id="ml-next-btn" onclick="mlLoadSubs(mlState.subsPage+1)">Następna →</button>
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS TAB -->
+    <div id="ml-tab-campaigns" style="display:none">
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn btn-acc" onclick="mlCreateCampaignModal()">+ Nowa kampania w MailerLite</button>
+        <button class="btn" onclick="mlLoadCampaigns()">↻ Odśwież</button>
+      </div>
+      <div id="ml-campaigns-list" class="camp-list"></div>
+    </div>
+
+    <!-- GROUPS TAB -->
+    <div id="ml-tab-groups" style="display:none">
+      <div id="ml-groups-list" class="camp-list"></div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div id="ml-tab-stats" style="display:none">
+      <div style="font-size:12px;color:var(--t2);margin-bottom:14px">Statystyki ostatnich kampanii z MailerLite.</div>
+      <div id="ml-stats-list"></div>
+    </div>
+
+    <!-- SEND TAB -->
+    <div id="ml-tab-send" style="display:none">
+      <div class="card" style="margin-bottom:14px;border-color:rgba(212,245,60,0.15)">
+        <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px">Wyślij przez infrastrukturę MailerLite</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.6">Maile wysłane przez ML mają pełen tracking: open rate, CTR, bounces, unsubscribes. Możesz też wybierać grupy zamiast wysyłać do całej listy.</div>
+      </div>
+      <div class="field"><label class="flbl">Wybierz kampanię z appki</label><select id="ml-send-camp"></select></div>
+      <div class="field"><label class="flbl">Wybierz mail z kampanii</label><select id="ml-send-mail"></select></div>
+      <div class="field"><label class="flbl">Wyślij do (grupy MailerLite)</label><select id="ml-send-group"><option value="all">Cała lista</option></select></div>
+      <div class="field"><label class="flbl">Zaplanuj wysyłkę (opcjonalnie)</label><input type="datetime-local" id="ml-send-time"></div>
+      <div id="ml-send-preview" class="card" style="margin-bottom:12px;display:none">
+        <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:6px">PODGLĄD</div>
+        <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:4px" id="ml-send-prev-subj"></div>
+        <div style="font-size:11px;color:var(--t2);font-family:'Fraunces',serif;font-style:italic;line-height:1.5;max-height:80px;overflow:hidden" id="ml-send-prev-body"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-acc" onclick="mlSendCampaign()">Zatwierdź i wyślij przez MailerLite →</button>
+        <button class="btn btn-ghost" onclick="mlSendTest()">Test na mój email</button>
+      </div>
+      <div id="ml-send-result"></div>
     </div>
   </div>
 
-  </div><!-- end content -->
+  </div><!-- end view -->
 </main>
 </div><!-- end shell -->
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- MODAL: New Campaign -->
+<div class="overlay" id="modal-camp">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Nowa kampania</div>
+      <div class="modal-close" onclick="closeModal('modal-camp')">✕</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Typ kampanii</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <div class="camp-tab value on" id="new-camp-value" onclick="setCampType('value')">
+          <div class="camp-tab-icon">♾</div>
+          <div class="camp-tab-name">Value / Evergreen</div>
+          <div class="camp-tab-desc">Ciągła wysyłka, kolejka maili, bez deadline'u</div>
+        </div>
+        <div class="camp-tab profit" id="new-camp-profit" onclick="setCampType('profit')">
+          <div class="camp-tab-icon">⚡</div>
+          <div class="camp-tab-name">Profit / Launch</div>
+          <div class="camp-tab-desc">Kampania czasowa z oknem sprzedażowym</div>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label class="flbl">Nazwa kampanii</label><input type="text" id="nc-name" placeholder="np. Evergreen Q1 2026 lub Black Friday Launch"></div>
+    <div class="field"><label class="flbl">Opis / cel</label><textarea id="nc-desc" rows="2" placeholder="Czemu służy ta kampania?"></textarea></div>
+    <div id="nc-profit-fields" style="display:none">
+      <div class="sep"></div>
+      <div class="modal-section-title">Okno sprzedażowe</div>
+      <div class="win-row">
+        <div class="win-field"><label class="flbl">Start kampanii</label><input type="date" id="nc-start"></div>
+        <div class="win-field"><label class="flbl">Koniec kampanii</label><input type="date" id="nc-end"></div>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="btn-row">
+      <button class="btn btn-acc" onclick="createCampaign()">Utwórz kampanię</button>
+      <button class="btn" onclick="closeModal('modal-camp')">Anuluj</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Campaign Detail -->
+<div class="overlay" id="modal-camp-detail">
+  <div class="modal" style="max-width:860px">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="cd-title">Kampania</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+          <span id="cd-status-badge"></span>
+          <span style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace" id="cd-meta"></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="cd-actions"></div>
+        <div class="modal-close" onclick="closeModal('modal-camp-detail')">✕</div>
+      </div>
+    </div>
+
+    <!-- MAIL TILES -->
+    <div class="modal-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="modal-section-title" style="margin-bottom:0">Maile w kampanii</div>
+        <button class="btn btn-sm btn-ghost" onclick="openAddMailModal()">+ Dodaj mail</button>
+      </div>
+      <div id="cd-mail-grid" class="mail-grid"></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- SEND PANEL -->
+    <div id="cd-send-panel">
+      <div class="modal-section-title">Wysyłka broadcastu</div>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+        <div style="font-size:12px;color:var(--t2)">Odbiorców: <strong id="cd-recip-count" style="color:var(--text)">0</strong></div>
+        <div style="font-size:12px;color:var(--t2)">Następny mail: <strong id="cd-next-mail" style="color:var(--accent)">—</strong></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-acc" id="cd-send-btn" onclick="sendNextMail()">Wyślij następny mail →</button>
+        <button class="btn btn-ghost" onclick="sendTestFromCamp()">Test na mój email</button>
+      </div>
+      <div id="cd-send-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Mail Detail -->
+<div class="overlay" id="modal-mail">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-head">
+      <div class="modal-title" id="mm-title">Podgląd maila</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span id="mm-approve-badge"></span>
+        <div class="modal-close" onclick="closeModal('modal-mail')">✕</div>
+      </div>
+    </div>
+    <div class="field"><label class="flbl">Subject line</label><input type="text" id="mm-subject" placeholder="Temat maila"></div>
+    <div class="mail-preview-tabs">
+      <button class="mp-tab on" onclick="switchMailTab('edit',this)">Edycja</button>
+      <button class="mp-tab" onclick="switchMailTab('preview',this)">Podgląd HTML</button>
+      <button class="mp-tab" onclick="switchMailTab('plain',this)">Plain text</button>
+    </div>
+    <div id="mp-edit" class="mp-content"><textarea id="mm-body" rows="12" style="width:100%;background:transparent;border:none;color:var(--text);font-family:'Fraunces',serif;font-size:13px;line-height:1.7;outline:none;resize:vertical"></textarea></div>
+    <div id="mp-preview" class="mp-content rendered mp-html" style="display:none"></div>
+    <div id="mp-plain" class="mp-content" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t2);white-space:pre-wrap"></div>
+
+    <div class="sep"></div>
+    <div class="modal-section">
+      <div class="modal-section-title">CTA / Linki</div>
+      <div class="cta-list" id="mm-cta-list"></div>
+      <button class="btn btn-sm" onclick="addCta()">+ Dodaj link CTA</button>
+    </div>
+    <div class="sep"></div>
+    <div class="btn-row">
+      <button class="btn btn-acc" onclick="saveMail()">Zapisz zmiany ✓</button>
+      <button class="btn btn-ghost" onclick="approveMail()">Zatwierdź do wysyłki ✓</button>
+      <button class="btn btn-red" onclick="deleteMail()">Usuń mail</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Mail to Campaign -->
+<div class="overlay" id="modal-add-mail">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Dodaj mail do kampanii</div>
+      <div class="modal-close" onclick="closeModal('modal-add-mail')">✕</div>
+    </div>
+    <div class="field"><label class="flbl">Subject line</label><input type="text" id="am-subject" placeholder="Temat maila"></div>
+    <div class="field"><label class="flbl">Treść</label><textarea id="am-body" rows="8" placeholder="Treść maila..."></textarea></div>
+    <div class="field">
+      <label class="flbl">CTA / Link (opcjonalnie)</label>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="am-cta-label" placeholder="Tekst przycisku" style="flex:1">
+        <input type="text" id="am-cta-url" placeholder="https://..." style="flex:2">
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="btn-row">
+      <button class="btn btn-acc" onclick="addMailToCampaign()">Dodaj ✓</button>
+      <button class="btn" onclick="closeModal('modal-add-mail')">Anuluj</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ─────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────
-const APP = {
-  step: 0,
-  expanded: null,
-  pending: 0,
-  done: 0,
-  baza: {},
-  out: {},
-  chosen_subj: null,
+const DB = {
+  campaigns: [],   // {id, type:'value'|'profit', name, desc, status, start, end, mails:[{id,subject,body,ctas,approved,sentAt}], sentCount, createdAt}
   recipients: [],
-  smtp: {},
+  baza: {},
+  api: {},
   history: [],
-  sending: false
+  pipe: { step:0, expanded:null, pending:0, out:{}, chosen_subj:null }
 };
 
-// LOAD FROM LOCALSTORAGE
+let currentCampId = null;
+let currentMailId = null;
+let newCampType = 'value';
+
+// LOAD
 try {
-  const saved = localStorage.getItem('mailflow_state');
-  if (saved) {
-    const s = JSON.parse(saved);
-    APP.baza = s.baza || {};
-    APP.recipients = s.recipients || [];
-    APP.smtp = s.smtp || {};
-    APP.history = s.history || [];
-    APP.done = s.done || 0;
-  }
-} catch(e) {}
+  const s = JSON.parse(localStorage.getItem('mf2') || '{}');
+  if (s.campaigns) DB.campaigns = s.campaigns;
+  if (s.recipients) DB.recipients = s.recipients;
+  if (s.baza) DB.baza = s.baza;
+  if (s.api) DB.api = s.api;
+  if (s.history) DB.history = s.history;
+} catch(e){}
 
-function saveState() {
+function save() {
+  try { localStorage.setItem('mf2', JSON.stringify({campaigns:DB.campaigns,recipients:DB.recipients,baza:DB.baza,api:DB.api,history:DB.history})); } catch(e){}
+}
+
+// ─────────────────────────────────────────
+// NAV
+// ─────────────────────────────────────────
+const PAGE_META = {
+  dashboard: ['Dashboard','Przegląd kampanii'],
+  value: ['Kampanie Value','evergreen · kolejka maili'],
+  profit: ['Kampanie Profit','launchowe · okno sprzedażowe'],
+  pipeline: ['Pipeline AI','AI generuje → Ty audytujesz'],
+  lista: ['Lista odbiorców','adresy email'],
+  baza: ['Baza wiedzy','dane dla AI'],
+  api: ['Resend API','konfiguracja wysyłki'],
+  mailerlite: ['MailerLite','subskrybenci · statystyki · kampanie']
+};
+
+function nav(id, el) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const [t,s] = PAGE_META[id]||[id,''];
+  document.getElementById('page-title').textContent = t;
+  document.getElementById('page-sub').textContent = s;
+  if(id==='value') renderCampList('value');
+  if(id==='profit') renderCampList('profit');
+  if(id==='dashboard') renderDashboard();
+  if(id==='pipeline') renderPipeline();
+  if(id==='lista') renderRecipients();
+  if(id==='baza') loadBazaFields();
+  if(id==='api') loadApiFields();
+  if(id==='mailerlite') initMailerLite();
+}
+
+// ─────────────────────────────────────────
+// CAMPAIGNS
+// ─────────────────────────────────────────
+function openNewCampaignModal(type) {
+  setCampType(type||'value');
+  document.getElementById('nc-name').value = '';
+  document.getElementById('nc-desc').value = '';
+  document.getElementById('nc-start').value = '';
+  document.getElementById('nc-end').value = '';
+  openModal('modal-camp');
+}
+
+function setCampType(t) {
+  newCampType = t;
+  document.getElementById('new-camp-value').classList.toggle('on', t==='value');
+  document.getElementById('new-camp-profit').classList.toggle('on', t==='profit');
+  document.getElementById('nc-profit-fields').style.display = t==='profit' ? 'block' : 'none';
+}
+
+function createCampaign() {
+  const name = document.getElementById('nc-name').value.trim();
+  if (!name) { toast('Wpisz nazwę kampanii','err'); return; }
+  const camp = {
+    id: Date.now().toString(),
+    type: newCampType,
+    name,
+    desc: document.getElementById('nc-desc').value.trim(),
+    status: 'draft',
+    start: document.getElementById('nc-start').value || null,
+    end: document.getElementById('nc-end').value || null,
+    mails: [],
+    sentCount: 0,
+    createdAt: new Date().toLocaleDateString('pl-PL')
+  };
+  DB.campaigns.push(camp);
+  save();
+  closeModal('modal-camp');
+  updateCounters();
+  toast(`Kampania "${name}" utworzona ✓`, 'ok');
+  nav(newCampType, document.querySelector(`[data-nav=${newCampType}]`));
+}
+
+function renderCampList(type) {
+  const el = document.getElementById(type+'-list');
+  const camps = DB.campaigns.filter(c=>c.type===type);
+  if (!camps.length) { el.innerHTML = '<div class="empty">Brak kampanii.<br>Kliknij "+ Nowa kampania" żeby zacząć.</div>'; return; }
+  el.innerHTML = '';
+  camps.forEach((c,i) => {
+    const div = document.createElement('div');
+    div.className = 'camp-item';
+    div.style.animationDelay = (i*0.04)+'s';
+    const icon = c.type==='value' ? '♾' : '⚡';
+    const approved = c.mails.filter(m=>m.approved).length;
+    div.innerHTML = `
+      <div class="camp-item-ico">${icon}</div>
+      <div class="camp-item-info">
+        <div class="camp-item-name">${c.name}</div>
+        <div class="camp-item-meta">${c.mails.length} maili · ${approved} zatwierdzonych · ${c.sentCount} wysłanych${c.start ? ' · '+c.start+' → '+c.end : ''}</div>
+      </div>
+      <div class="camp-item-r">
+        ${statusBadge(c.status)}
+        <button class="btn btn-sm" onclick="event.stopPropagation();openCampDetail('${c.id}')">Otwórz →</button>
+      </div>`;
+    div.onclick = () => openCampDetail(c.id);
+    el.appendChild(div);
+  });
+}
+
+function statusBadge(s) {
+  const map = {draft:'status-draft',ready:'status-ready',active:'status-active',done:'status-done',value:'status-value'};
+  const labels = {draft:'Draft',ready:'Gotowa',active:'Aktywna',done:'Zakończona'};
+  return `<span class="status ${map[s]||'status-draft'}">${labels[s]||s}</span>`;
+}
+
+function openCampDetail(id) {
+  currentCampId = id;
+  const c = DB.campaigns.find(x=>x.id===id);
+  if (!c) return;
+  document.getElementById('cd-title').textContent = c.name;
+  document.getElementById('cd-status-badge').innerHTML = statusBadge(c.status);
+  const meta = [];
+  if (c.desc) meta.push(c.desc);
+  if (c.start) meta.push(`${c.start} → ${c.end}`);
+  meta.push(`${c.mails.length} maili`);
+  document.getElementById('cd-meta').textContent = meta.join(' · ');
+
+  // Actions
+  const actions = document.getElementById('cd-actions');
+  const statusBtns = [];
+  if (c.status==='draft') statusBtns.push(`<button class="btn btn-sm btn-blue" onclick="setCampStatus('${id}','ready')">Oznacz: Gotowa</button>`);
+  if (c.status==='ready') statusBtns.push(`<button class="btn btn-sm btn-acc" onclick="setCampStatus('${id}','active')">Aktywuj</button>`);
+  if (c.status==='active') statusBtns.push(`<button class="btn btn-sm" onclick="setCampStatus('${id}','done')">Zakończ</button>`);
+  actions.innerHTML = statusBtns.join('');
+
+  renderMailGrid(id);
+  document.getElementById('cd-recip-count').textContent = DB.recipients.length;
+  const nextApproved = c.mails.find(m=>m.approved && !m.sentAt);
+  document.getElementById('cd-next-mail').textContent = nextApproved ? nextApproved.subject : '— brak zatwierdzonych';
+  document.getElementById('cd-send-btn').disabled = !nextApproved;
+  document.getElementById('cd-send-result').innerHTML = '';
+  openModal('modal-camp-detail');
+}
+
+function setCampStatus(id, status) {
+  const c = DB.campaigns.find(x=>x.id===id);
+  if (!c) return;
+  c.status = status;
+  save();
+  openCampDetail(id);
+  updateCounters();
+  toast(`Status: ${status}`, 'ok');
+}
+
+function renderMailGrid(campId) {
+  const c = DB.campaigns.find(x=>x.id===campId);
+  const el = document.getElementById('cd-mail-grid');
+  if (!c || !c.mails.length) { el.innerHTML = `<div style="font-size:12px;color:var(--t3);grid-column:1/-1;padding:20px 0">Brak maili. Wygeneruj przez Pipeline AI lub dodaj ręcznie.</div>`; return; }
+  el.innerHTML = '';
+  c.mails.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = 'mail-tile ' + (m.approved ? 'approved' : (m.sentAt ? '' : 'pending'));
+    div.style.animationDelay = (i*0.03)+'s';
+    div.innerHTML = `
+      <div class="mail-num">#${i+1}${m.sentAt ? ' · wysłany '+m.sentAt : ''}</div>
+      <div class="mail-subject">${m.subject || '(brak tematu)'}</div>
+      <div class="mail-preview">${m.body ? m.body.substring(0,80)+'…' : '(brak treści)'}</div>
+      <div class="mail-tile-foot">
+        <span class="mail-date">${m.approved ? '✓ zatw.' : 'oczekuje'}</span>
+        <div class="mail-approve-dot ${m.approved?'ok':''}"></div>
+      </div>`;
+    div.onclick = () => openMailDetail(campId, m.id);
+    el.appendChild(div);
+  });
+}
+
+function openAddMailModal() {
+  document.getElementById('am-subject').value = '';
+  document.getElementById('am-body').value = '';
+  document.getElementById('am-cta-label').value = '';
+  document.getElementById('am-cta-url').value = '';
+  openModal('modal-add-mail');
+}
+
+function addMailToCampaign() {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  if (!c) return;
+  const subject = document.getElementById('am-subject').value.trim();
+  const body = document.getElementById('am-body').value.trim();
+  if (!subject && !body) { toast('Wpisz temat lub treść','err'); return; }
+  const ctas = [];
+  const ctaLabel = document.getElementById('am-cta-label').value.trim();
+  const ctaUrl = document.getElementById('am-cta-url').value.trim();
+  if (ctaLabel && ctaUrl) ctas.push({label:ctaLabel, url:ctaUrl});
+  c.mails.push({ id: Date.now().toString(), subject, body, ctas, approved: false, sentAt: null });
+  save();
+  closeModal('modal-add-mail');
+  renderMailGrid(currentCampId);
+  openCampDetail(currentCampId);
+  toast('Mail dodany ✓', 'ok');
+}
+
+function openMailDetail(campId, mailId) {
+  currentCampId = campId;
+  currentMailId = mailId;
+  const c = DB.campaigns.find(x=>x.id===campId);
+  const m = c?.mails.find(x=>x.id===mailId);
+  if (!m) return;
+
+  document.getElementById('mm-title').textContent = m.subject || 'Podgląd maila';
+  document.getElementById('mm-subject').value = m.subject || '';
+  document.getElementById('mm-body').value = m.body || '';
+  document.getElementById('mm-approve-badge').innerHTML = m.approved
+    ? '<span class="status status-active">Zatwierdzone</span>'
+    : '<span class="status status-draft">Oczekuje</span>';
+
+  // CTA
+  renderCtaList(m.ctas || []);
+  switchMailTab('edit', document.querySelector('.mp-tab'));
+  openModal('modal-mail');
+}
+
+function renderCtaList(ctas) {
+  const el = document.getElementById('mm-cta-list');
+  el.innerHTML = ctas.map((c,i) => `
+    <div class="cta-item">
+      <input type="text" value="${c.label}" placeholder="Tekst" oninput="updateCta(${i},'label',this.value)" style="flex:1">
+      <input type="text" value="${c.url}" placeholder="https://..." oninput="updateCta(${i},'url',this.value)" style="flex:2">
+      <span class="cta-remove" onclick="removeCta(${i})">✕</span>
+    </div>`).join('');
+}
+
+function updateCta(i, field, val) {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  const m = c?.mails.find(x=>x.id===currentMailId);
+  if (m?.ctas[i]) m.ctas[i][field] = val;
+}
+
+function addCta() {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  const m = c?.mails.find(x=>x.id===currentMailId);
+  if (!m) return;
+  m.ctas = m.ctas || [];
+  m.ctas.push({label:'', url:''});
+  renderCtaList(m.ctas);
+}
+
+function removeCta(i) {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  const m = c?.mails.find(x=>x.id===currentMailId);
+  if (!m) return;
+  m.ctas.splice(i,1);
+  renderCtaList(m.ctas);
+}
+
+function saveMail() {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  const m = c?.mails.find(x=>x.id===currentMailId);
+  if (!m) return;
+  m.subject = document.getElementById('mm-subject').value.trim();
+  m.body = document.getElementById('mm-body').value.trim();
+  save();
+  toast('Mail zapisany ✓', 'ok');
+  document.getElementById('mm-title').textContent = m.subject;
+}
+
+function approveMail() {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  const m = c?.mails.find(x=>x.id===currentMailId);
+  if (!m) return;
+  m.subject = document.getElementById('mm-subject').value.trim();
+  m.body = document.getElementById('mm-body').value.trim();
+  m.approved = true;
+  save();
+  document.getElementById('mm-approve-badge').innerHTML = '<span class="status status-active">Zatwierdzone</span>';
+  toast('Mail zatwierdzony do wysyłki ✓', 'ok');
+  renderMailGrid(currentCampId);
+}
+
+function deleteMail() {
+  if (!confirm('Usunąć ten mail?')) return;
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  if (!c) return;
+  c.mails = c.mails.filter(m=>m.id!==currentMailId);
+  save();
+  closeModal('modal-mail');
+  renderMailGrid(currentCampId);
+  toast('Mail usunięty', 'ok');
+}
+
+function switchMailTab(t, el) {
+  document.querySelectorAll('.mp-tab').forEach(b=>b.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.getElementById('mp-edit').style.display = t==='edit' ? 'block' : 'none';
+  document.getElementById('mp-preview').style.display = t==='preview' ? 'block' : 'none';
+  document.getElementById('mp-plain').style.display = t==='plain' ? 'block' : 'none';
+  if (t==='preview') {
+    const body = document.getElementById('mm-body').value;
+    const subj = document.getElementById('mm-subject').value;
+    const ctas = (() => { try { const c = DB.campaigns.find(x=>x.id===currentCampId); return c?.mails.find(x=>x.id===currentMailId)?.ctas||[]; } catch(e){return [];} })();
+    const ctaHtml = ctas.map(c=>`<a href="${c.url}" style="display:inline-block;background:#0a0a0b;color:#ffffff;padding:10px 20px;border-radius:6px;text-decoration:none;font-family:sans-serif;margin:4px 4px 0 0">${c.label}</a>`).join('');
+    document.getElementById('mp-preview').innerHTML = `<div style="font-family:Georgia,serif;max-width:560px;padding:20px;color:#1a1a1a;line-height:1.7"><h3 style="font-size:16px;margin-bottom:16px;font-family:sans-serif">${subj}</h3>${body.replace(/\n/g,'<br>')}${ctaHtml ? '<br><br>'+ctaHtml : ''}</div>`;
+  }
+  if (t==='plain') {
+    document.getElementById('mp-plain').textContent = document.getElementById('mm-body').value;
+  }
+}
+
+// ─────────────────────────────────────────
+// SEND
+// ─────────────────────────────────────────
+function makeHtml(subject, body, ctas) {
+  const ctaHtml = (ctas||[]).map(c=>`<a href="${c.url}" style="display:inline-block;background:#0a0a0b;color:#fff;padding:12px 24px;border-radius:7px;text-decoration:none;font-family:sans-serif;font-weight:600;margin:4px 4px 0 0">${c.label}</a>`).join('');
+  return `<div style="font-family:Georgia,serif;max-width:580px;margin:0 auto;padding:32px 20px;line-height:1.8;color:#1a1a1a;background:#fff"><p style="font-size:14px;margin-bottom:16px">${body.replace(/\n/g,'<br>')}</p>${ctaHtml ? '<div style="margin-top:20px">'+ctaHtml+'</div>' : ''}<br><hr style="border:none;border-top:1px solid #eee;margin:24px 0"><p style="font-size:11px;color:#999;text-align:center">Aby zrezygnować z subskrypcji, odpowiedz "rezygnacja".</p></div>`;
+}
+
+async function resendOne(to, subject, html) {
+  const r = await fetch('https://api.resend.com/emails', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+DB.api.key},
+    body: JSON.stringify({
+      from:`${DB.api.from_name||'Newsletter'} <${DB.api.from_email}>`,
+      to:[to], subject, html,
+      headers:{'List-Unsubscribe':'<mailto:'+DB.api.from_email+'?subject=rezygnacja>'}
+    })
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.message||JSON.stringify(d));
+  return d;
+}
+
+async function sendNextMail() {
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  if (!c) return;
+  if (!DB.api.key || !DB.api.from_email) { toast('Skonfiguruj Resend API najpierw','err'); return; }
+  if (!DB.recipients.length) { toast('Dodaj odbiorców na liście','err'); return; }
+  const mail = c.mails.find(m=>m.approved && !m.sentAt);
+  if (!mail) { toast('Brak zatwierdzonych maili do wysyłki','err'); return; }
+  if (!confirm(`Wysłać "${mail.subject}" do ${DB.recipients.length} odbiorców?`)) return;
+  const btn = document.getElementById('cd-send-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Wysyłam…';
+  const resultEl = document.getElementById('cd-send-result');
+  let sent=0, failed=0;
+  for (let i=0; i<DB.recipients.length; i++) {
+    btn.innerHTML = `<span class="spin"></span> ${i+1}/${DB.recipients.length}`;
+    resultEl.innerHTML = `<div class="warn-s">Wysyłam ${i+1}/${DB.recipients.length}…</div>`;
+    try { await resendOne(DB.recipients[i], mail.subject, makeHtml(mail.subject, mail.body, mail.ctas)); sent++; }
+    catch(e) { failed++; }
+    await new Promise(r=>setTimeout(r,200));
+  }
+  mail.sentAt = new Date().toLocaleDateString('pl-PL');
+  c.sentCount = (c.sentCount||0)+1;
+  DB.history.unshift({date:mail.sentAt, campName:c.name, subject:mail.subject, sent, type:c.type});
+  save();
+  resultEl.innerHTML = `<div class="${failed?'warn-s':'ok-s'}">✅ Wysłano do ${sent} odbiorców${failed?' · błędy: '+failed:''}</div>`;
+  btn.innerHTML = 'Wyślij następny mail →';
+  const nextMail = c.mails.find(m=>m.approved && !m.sentAt);
+  document.getElementById('cd-next-mail').textContent = nextMail ? nextMail.subject : '— brak więcej';
+  btn.disabled = !nextMail;
+  renderMailGrid(currentCampId);
+  updateCounters();
+  toast(`Wysłano do ${sent} odbiorców ✓`,'ok');
+}
+
+async function sendTestFromCamp() {
+  if (!DB.api.key || !DB.api.test_email) { toast('Ustaw test email w Resend API','err'); return; }
+  const c = DB.campaigns.find(x=>x.id===currentCampId);
+  const mail = c?.mails.find(m=>m.approved && !m.sentAt) || c?.mails[0];
+  if (!mail) { toast('Brak maili w kampanii','err'); return; }
   try {
-    localStorage.setItem('mailflow_state', JSON.stringify({
-      baza: APP.baza, recipients: APP.recipients,
-      smtp: APP.smtp, history: APP.history, done: APP.done
-    }));
-  } catch(e) {}
+    await resendOne(DB.api.test_email, '[TEST] '+mail.subject, makeHtml(mail.subject, mail.body, mail.ctas));
+    toast('Test wysłany ✓','ok');
+  } catch(e) { toast('Błąd: '+e.message,'err'); }
 }
 
 // ─────────────────────────────────────────
-// NAVIGATION
+// PIPELINE AI
 // ─────────────────────────────────────────
-function goTo(sec, el) {
-  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
-  document.getElementById('sec-' + sec).classList.add('on');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (el) el.classList.add('active');
-  const titles = {
-    pipeline: 'Pipeline',
-    baza: 'Baza wiedzy',
-    lista: 'Lista odbiorców',
-    smtp: 'SMTP / DKIM',
-    historia: 'Historia maili'
-  };
-  document.getElementById('page-title').textContent = titles[sec] || sec;
+const STAGES = [
+  {id:'pomysl',who:'ai',label:'Agent 1 — Pomysł',desc:'AI analizuje bazę wiedzy i generuje pomysł: temat, kąt narracyjny, emocja, clue.',type:'gen_pomysl'},
+  {id:'pomysl_audit',who:'human',label:'Audyt pomysłu',desc:'Sprawdź, edytuj, zatwierdź lub wygeneruj od nowa.',type:'audit',auditOf:'pomysl'},
+  {id:'tytuly',who:'ai',label:'Agent 2 — Subject lines',desc:'5 clickbaitowych wariantów tytułu: ciekawość, emocja, prowokacja, FOMO, humor.',type:'gen_tytuly'},
+  {id:'tytuly_audit',who:'human',label:'Wybór tytułu',desc:'Wybierz jeden z wariantów lub wpisz własny.',type:'audit_tytuly'},
+  {id:'content',who:'ai',label:'Agent 3 — Treść maila',desc:'Pełny mail: hook, karuzela emocji, zwrot, CTA. Ton jak pracownik po godzinach.',type:'gen_content'},
+  {id:'content_audit',who:'human',label:'Audyt + przypisz do kampanii',desc:'Ostatni przegląd. Zatwierdź i przypisz do kampanii Value lub Profit.',type:'audit_final'}
+];
+
+const P = DB.pipe;
+
+function resetPipeline() {
+  P.step=0; P.expanded=null; P.pending=0; P.out={}; P.chosen_subj=null;
+  renderPipeline();
 }
 
-// ─────────────────────────────────────────
-// BAZA
-// ─────────────────────────────────────────
-function loadBazaFields() {
-  const b = APP.baza;
-  if (b.firma) document.getElementById('b-firma').value = b.firma;
-  if (b.produkt) document.getElementById('b-produkt').value = b.produkt;
-  if (b.persona) document.getElementById('b-persona').value = b.persona;
-  if (b.usp) document.getElementById('b-usp').value = b.usp;
-  if (b.bole) document.getElementById('b-bole').value = b.bole;
-  if (b.ton) document.getElementById('b-ton').value = b.ton;
-  if (b.ceny) document.getElementById('b-ceny').value = b.ceny;
-  if (b.freq) document.getElementById('b-freq').value = b.freq;
-}
-
-function saveBaza() {
-  APP.baza = {
-    firma: v('b-firma'), produkt: v('b-produkt'),
-    persona: v('b-persona'), usp: v('b-usp'),
-    bole: v('b-bole'), ton: v('b-ton'),
-    ceny: v('b-ceny'), freq: v('b-freq')
-  };
-  saveState();
-  updateBazaPreview();
-  show('baza-ok');
-  setTimeout(() => hide('baza-ok'), 3000);
-  toast('Baza zapisana ✓', 'acc');
-}
-
-function bazaStr() {
-  const b = APP.baza;
-  return [
-    b.firma && `Firma: ${b.firma}`,
-    b.produkt && `Produkt: ${b.produkt}`,
-    b.persona && `Buyer persona: ${b.persona}`,
-    b.ton && `Ton: ${b.ton}`,
-    b.usp && `USP: ${b.usp}`,
-    b.bole && `Bóle klienta: ${b.bole}`,
-    b.ceny && `Ceny/Omnibus: ${b.ceny}`
-  ].filter(Boolean).join('\n') || '(brak bazy — uzupełnij zakładkę Baza wiedzy)';
-}
-
-function updateBazaPreview() {
-  const b = APP.baza;
-  const el = document.getElementById('baza-prev');
-  if (!b.firma) {
-    el.innerHTML = '<div style="font-size:12px;color:var(--t3);font-family:\'DM Mono\',monospace">Uzupełnij zakładkę "Baza wiedzy"</div>';
-    return;
+function renderPipeline() {
+  document.getElementById('nb-pipe').textContent = P.pending;
+  document.getElementById('nb-pipe').classList.toggle('show', P.pending>0);
+  const hasMail = P.out.content_approved || P.out.content;
+  document.getElementById('pipe-preview-card').style.display = hasMail ? 'block':'none';
+  document.getElementById('pipe-assign-card').style.display = P.out.content_approved ? 'block':'none';
+  if (hasMail) {
+    document.getElementById('pipe-prev-subj').textContent = P.out.tytuly_approved||'—';
+    document.getElementById('pipe-prev-body').textContent = (P.out.content_approved||P.out.content||'').substring(0,300)+'…';
   }
-  const rows = [
-    ['Firma', b.firma],
-    ['Persona', b.persona ? b.persona.slice(0,70)+'…' : null],
-    ['Ton', b.ton ? b.ton.slice(0,60)+'…' : null],
-    ['Częstotliwość', b.freq]
-  ].filter(r => r[1]);
-  el.innerHTML = rows.map(r => `
-    <div class="mini-label">${r[0]}</div>
-    <div class="mini-val">${r[1]}</div>
-  `).join('');
-}
-
-// ─────────────────────────────────────────
-// SMTP CONFIG
-// ─────────────────────────────────────────
-function loadSmtpFields() {
-  const s = APP.smtp;
-  if (s.api) document.getElementById('s-api').value = s.api;
-  if (s.from_email) document.getElementById('s-from-email').value = s.from_email;
-  if (s.from_name) document.getElementById('s-from-name').value = s.from_name;
-  if (s.test_email) document.getElementById('s-test-email').value = s.test_email;
-  updateSmtpStatus();
-}
-
-function saveSmtp() {
-  APP.smtp = {
-    api: v('s-api').replace(/\/$/, ''),
-    from_email: v('s-from-email'),
-    from_name: v('s-from-name'),
-    test_email: v('s-test-email')
-  };
-  saveState();
-  updateSmtpStatus();
-  toast('Konfiguracja SMTP zapisana ✓', 'acc');
-}
-
-function updateSmtpStatus() {
-  const ok = APP.smtp.api && APP.smtp.from_email;
-  const pulse = document.getElementById('smtp-pulse');
-  const statusTxt = document.getElementById('smtp-status-text');
-  const smtpMini = document.getElementById('smtp-info-mini');
-  pulse.className = 'pulse ' + (ok ? 'ok' : 'err');
-  statusTxt.textContent = ok ? (APP.smtp.from_email) : 'SMTP nie skonfigurowany';
-  if (smtpMini) smtpMini.textContent = ok ? APP.smtp.api : 'Nie skonfigurowany — przejdź do SMTP/DKIM';
-}
-
-async function testConnection() {
-  const resultEl = document.getElementById('smtp-test-result');
-  if (!APP.smtp.api) {
-    resultEl.innerHTML = '<div class="err-strip">❌ Najpierw zapisz URL backendu API</div>';
-    return;
+  if (P.out.content_approved) {
+    const sel = document.getElementById('pipe-assign-camp');
+    const camps = DB.campaigns;
+    sel.innerHTML = camps.length ? camps.map(c=>`<option value="${c.id}">${c.name} (${c.type})</option>`).join('') : '<option value="">— brak kampanii —</option>';
   }
-  resultEl.innerHTML = '<div class="warn-strip"><span class="spin spin-l"></span> Testuję połączenie…</div>';
+
+  // Stages
+  const cont = document.getElementById('pipe-stages');
+  cont.innerHTML='';
+  STAGES.forEach((s,i)=>{
+    const isExp = P.expanded===s.id;
+    const isSkip = i > P.step+1;
+    const isDone = isPipeDone(s);
+    const row = document.createElement('div');
+    row.className='pipe-row';
+    const g = document.createElement('div');
+    g.className='pipe-gutter';
+    const nd = document.createElement('div');
+    nd.className='pnode '+(isDone?'done':(s.who==='ai'?'ai':'human'));
+    g.appendChild(nd);
+    if (i<STAGES.length-1) { const l=document.createElement('div');l.className='pline';g.appendChild(l); }
+    const card = document.createElement('div');
+    card.className='pcard'+(isExp?' exp':'')+(isSkip?' skip':'');
+    card.style.animationDelay=(i*0.04)+'s';
+    card.innerHTML=`<div class="phead"><span class="pbadge pb-${s.who}">${s.who==='ai'?'AI':'TY'}</span><span class="pname">${s.label}</span><span class="parr${isExp?' open':''}">▾</span></div><div class="pbody${isExp?' open':''}">${buildPipeBody(s)}</div>`;
+    if(!isSkip) card.querySelector('.phead').addEventListener('click',()=>{ P.expanded=isExp?null:s.id; renderPipeline(); });
+    wirePipe(s, card.querySelector('.pbody'));
+    row.appendChild(g); row.appendChild(card); cont.appendChild(row);
+  });
+
+  // Progress
+  const prog = document.getElementById('pipe-prog');
+  prog.innerHTML = STAGES.map((s,i)=>{
+    const cls = i<P.step?'done':(i===P.step?'cur':'');
+    return `<div class="pstep ${cls}" style="display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px;font-size:11px;color:${i===P.step?'var(--accent)':(i<P.step?'var(--t2)':'var(--t3)')}"><div style="width:4px;height:4px;border-radius:50%;background:${i===P.step?'var(--accent)':(i<P.step?'var(--green)':'var(--t3)')};flex-shrink:0"></div>${s.label}</div>`;
+  }).join('');
+}
+
+function isPipeDone(s) {
+  if(s.type==='gen_pomysl') return !!P.out.pomysl_approved;
+  if(s.type==='gen_tytuly') return !!P.out.tytuly_approved;
+  if(s.type==='gen_content') return !!P.out.content_approved;
+  if(s.type==='audit') return !!P.out[s.auditOf+'_approved'];
+  if(s.type==='audit_tytuly') return !!P.out.tytuly_approved;
+  if(s.type==='audit_final') return !!P.out.content_approved;
+  return false;
+}
+
+function buildPipeBody(s) {
+  let h=`<p class="pdesc">${s.desc}</p>`;
+  const out = P.out[s.id]||'';
+  if(s.type==='gen_pomysl') {
+    h+=`<div class="field"><label class="flbl">Dodatkowy kontekst</label><textarea id="ex-ctx" rows="2" placeholder="np. mail ma być śmieszny; uderz w ból samotności">${P.out.pomysl_extra||''}</textarea></div>`;
+    if(out) h+=`<div class="outbox">${out}</div>`;
+    h+=`<div class="btn-row"><button class="btn ${out?'btn-ghost':'btn-acc'}" data-gen="gen_pomysl" ${P.out.pomysl_loading?'disabled':''}>${P.out.pomysl_loading?'<span class="spin spin-l"></span>Generuję…':(out?'↺ Nowy pomysł':'⚡ Generuj pomysł')}</button></div>`;
+  } else if(s.type==='audit') {
+    const prev=P.out[s.auditOf]||'';
+    h+=`<div class="outbox${prev?'':' empty'}">${prev||'Wróć do poprzedniego etapu.'}</div>`;
+    h+=`<div class="field"><label class="flbl">Edytuj</label><textarea id="edit-${s.id}" rows="4">${prev}</textarea></div>`;
+    h+=`<div class="btn-row"><button class="btn btn-acc" data-approve="${s.auditOf}">Zatwierdź ✓</button><button class="btn" data-regen="${s.auditOf}">↺ Nowa wersja</button></div>`;
+    if(P.out[s.auditOf+'_approved']) h+=`<div class="ok-s">✓ Zatwierdzono</div>`;
+  } else if(s.type==='gen_tytuly') {
+    if(P.out.tytuly_opts?.length) {
+      h+=`<label class="flbl" style="margin-bottom:6px">Warianty</label><div class="subj-opts">${P.out.tytuly_opts.map((o,i)=>`<div class="subj-opt"><span class="subj-n">${i+1}</span>${o}</div>`).join('')}</div>`;
+    }
+    h+=`<div class="btn-row"><button class="btn ${P.out.tytuly?'btn-ghost':'btn-acc'}" data-gen="gen_tytuly" ${P.out.tytuly_loading?'disabled':''}>${P.out.tytuly_loading?'<span class="spin spin-l"></span>Generuję…':(P.out.tytuly?'↺ Nowe tytuły':'⚡ Generuj tytuły')}</button></div>`;
+  } else if(s.type==='audit_tytuly') {
+    const opts=P.out.tytuly_opts||[];
+    if(opts.length) h+=`<label class="flbl" style="margin-bottom:6px">Wybierz</label><div class="subj-opts">${opts.map((o,i)=>`<div class="subj-opt${P.chosen_subj===i?' chosen':''}" data-subj="${i}"><span class="subj-n">${i+1}</span>${o}</div>`).join('')}</div>`;
+    h+=`<div class="field"><label class="flbl">Lub wpisz własny</label><input type="text" id="custom-subj" value="${P.out.tytuly_approved||''}" placeholder="Subject line…"></div>`;
+    h+=`<div class="btn-row"><button class="btn btn-acc" data-approve-subj="1">Zatwierdź tytuł ✓</button></div>`;
+    if(P.out.tytuly_approved) h+=`<div class="ok-s">✓ "${P.out.tytuly_approved}"</div>`;
+  } else if(s.type==='gen_content') {
+    if(P.out.content) h+=`<div class="outbox">${P.out.content}</div>`;
+    h+=`<div class="btn-row"><button class="btn ${P.out.content?'btn-ghost':'btn-acc'}" data-gen="gen_content" ${P.out.content_loading?'disabled':''}>${P.out.content_loading?'<span class="spin spin-l"></span>Generuję…':(P.out.content?'↺ Nowa treść':'⚡ Generuj treść')}</button></div>`;
+  } else if(s.type==='audit_final') {
+    h+=`<label class="flbl">Subject</label><div class="outbox" style="color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:11px">${P.out.tytuly_approved||'(brak)'}</div>`;
+    h+=`<div class="field"><label class="flbl">Treść</label><textarea id="edit-final" rows="8">${P.out.content||''}</textarea></div>`;
+    h+=`<div class="btn-row"><button class="btn btn-acc" data-approve-final="1">Zatwierdź ✓</button><button class="btn" data-regen="content">↺ Nowa treść</button></div>`;
+    if(P.out.content_approved) h+=`<div class="ok-s">✓ Zatwierdzone — przypisz do kampanii →</div>`;
+  }
+  return h;
+}
+
+function wirePipe(s, body) {
+  body.querySelectorAll('[data-gen]').forEach(b=>b.addEventListener('click',()=>{ if(!b.disabled) runGen(s); }));
+  const ap=body.querySelector('[data-approve]');
+  if(ap) ap.addEventListener('click',()=>{
+    const ta=body.querySelector(`#edit-${s.id}`);
+    P.out[ap.dataset.approve+'_approved']=ta?ta.value:(P.out[s.auditOf]||'');
+    P.pending=Math.max(0,P.pending-1);
+    const idx=STAGES.findIndex(x=>x.id===s.id);
+    P.step=Math.max(P.step,idx+1); P.expanded=STAGES[idx+1]?.id||null;
+    renderPipeline();
+  });
+  body.querySelectorAll('[data-subj]').forEach(el=>el.addEventListener('click',()=>{
+    P.chosen_subj=parseInt(el.dataset.subj);
+    const inp=body.querySelector('#custom-subj');
+    if(inp) inp.value=(P.out.tytuly_opts||[])[P.chosen_subj]||'';
+    renderPipeline();
+  }));
+  const as=body.querySelector('[data-approve-subj]');
+  if(as) as.addEventListener('click',()=>{
+    const inp=body.querySelector('#custom-subj');
+    P.out.tytuly_approved=inp?inp.value:'';
+    P.pending=Math.max(0,P.pending-1);
+    const idx=STAGES.findIndex(x=>x.id===s.id);
+    P.step=Math.max(P.step,idx+1); P.expanded=STAGES[idx+1]?.id||null;
+    renderPipeline();
+  });
+  const af=body.querySelector('[data-approve-final]');
+  if(af) af.addEventListener('click',()=>{
+    const ta=body.querySelector('#edit-final');
+    P.out.content_approved=ta?ta.value:(P.out.content||'');
+    P.pending=Math.max(0,P.pending-1);
+    renderPipeline();
+  });
+  const rg=body.querySelector('[data-regen]');
+  if(rg) rg.addEventListener('click',()=>{
+    const orig=STAGES.find(x=>x.id===rg.dataset.regen);
+    if(orig){ P.expanded=orig.id; runGen(orig); }
+  });
+}
+
+async function runGen(s) {
+  P.out[s.id+'_loading']=true; P.expanded=s.id; renderPipeline();
+  const result = await callAI(s.type);
+  P.out[s.id+'_loading']=false;
+  if(s.type==='gen_tytuly') {
+    const lines=result.split('\n').filter(l=>/^\d+[.)]\s/.test(l.trim()));
+    P.out.tytuly_opts=lines.map(l=>l.replace(/^\d+[.)]\s*/,'').trim());
+    P.out.tytuly=result;
+  } else if(s.type==='gen_pomysl') {
+    const ta=document.querySelector('#ex-ctx'); if(ta) P.out.pomysl_extra=ta.value;
+    P.out.pomysl=result;
+  } else if(s.type==='gen_content') {
+    P.out.content=result; P.out.content_approved='';
+  }
+  P.pending++;
+  const idx=STAGES.findIndex(x=>x.id===s.id);
+  const nxt=STAGES[idx+1];
+  if(nxt){ P.step=Math.max(P.step,idx+1); P.expanded=nxt.id; }
+  renderPipeline();
+}
+
+async function callAI(type) {
+  const b=DB.baza;
+  const baza=`Firma: ${b.firma||'?'}\nProdukt: ${b.produkt||'?'}\nPersona: ${b.persona||'?'}\nTon: ${b.ton||'?'}\nUSP: ${b.usp||'?'}\nBóle: ${b.bole||'?'}\nCeny: ${b.ceny||'?'}`;
+  const pomysl=P.out.pomysl_approved||P.out.pomysl||'';
+  const subj=P.out.tytuly_approved||'';
+  let prompt='';
+  if(type==='gen_pomysl') {
+    prompt=`Jesteś AI copywriterem email marketingu.\n\nBaza:\n${baza}\n\nKontekst: ${P.out.pomysl_extra||'brak'}\n\nZaproponuj JEDEN konkretny pomysł na maila. Format:\n**Temat przewodni:** [1 zdanie]\n**Kąt narracyjny:** [historia/prowokacja/humor/edukacja/kontrarian + 1 zdanie wyjaśnienia]\n**Główna emocja:** [np. śmiech, niepokój, nadzieja]\n**Clue maila:** [pointa w 1 zdaniu]\n**Typ:** [wartościowy/promocyjny]\n\nPo polsku. Bez wstępów.`;
+  } else if(type==='gen_tytuly') {
+    prompt=`Jesteś mistrzem subject lines.\n\nBaza:\n${baza}\n\nPomysł:\n${pomysl}\n\n5 subject lines w różnych stylach:\n1. Ciekawość / niedopowiedzenie\n2. Emocja / ból klienta\n3. Prowokacja / kontrarian\n4. FOMO / pilność\n5. Humor / zaskoczenie\n\nMaks 60 znaków, bez emoji, po polsku.\nFormat: tylko tytuły, każdy w osobnej linii z numerem i kropką.`;
+  } else if(type==='gen_content') {
+    prompt=`Jesteś wybitnym email copywriterem. Piszesz jak pracownik po godzinach — ludzko, szczerze, nieperfekcyjnie.\n\nBaza:\n${baza}\n\nPomysł:\n${pomysl}\n\nSubject:\n${subj||'(z pomysłu)'}\n\nStruktura:\n— HOOK: 1-2 zdania zatrzymujące scrollowanie\n— RDZEŃ: karuzela emocji (śmiech→refleksja→niepokój→nadzieja)\n— ZWROT: nieoczekiwany insight\n— CTA: jedno konkretne wezwanie\n\n200-350 słów. Po polsku. Bez tematu w treści. Bez nagłówków.`;
+  }
   try {
-    const r = await fetch(APP.smtp.api + '/health');
-    const d = await r.json();
-    resultEl.innerHTML = `<div class="ok-strip">✅ Połączono — SMTP: ${d.smtp}, DKIM: ${d.dkim ? '✓' : '✗'}</div>`;
-  } catch(e) {
-    resultEl.innerHTML = `<div class="err-strip">❌ Błąd: ${e.message}. Sprawdź czy backend działa na serwerze.</div>`;
-  }
+    const anthropicKey=DB.api.anthropic_key||''; if(!anthropicKey) return 'Brak klucza Anthropic API — dodaj w zakładce Resend / API.'; const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':anthropicKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    return d.content?.[0]?.text||'Błąd generowania.';
+  } catch(e){ return 'Błąd API.'; }
+}
+
+function assignToCampaign() {
+  const sel=document.getElementById('pipe-assign-camp');
+  const campId=sel.value;
+  if(!campId){ toast('Wybierz kampanię','err'); return; }
+  const c=DB.campaigns.find(x=>x.id===campId);
+  if(!c){ toast('Kampania nie znaleziona','err'); return; }
+  c.mails.push({
+    id: Date.now().toString(),
+    subject: P.out.tytuly_approved||'',
+    body: P.out.content_approved||'',
+    ctas: [],
+    approved: true,
+    sentAt: null
+  });
+  save();
+  toast(`Mail przypisany do "${c.name}" ✓`,'ok');
+  resetPipeline();
+  updateCounters();
 }
 
 // ─────────────────────────────────────────
 // RECIPIENTS
 // ─────────────────────────────────────────
 function addRecipients() {
-  const raw = v('recip-input');
-  const emails = raw.split(/[\n,;]+/).map(e => e.trim().toLowerCase()).filter(e => e && e.includes('@'));
-  let added = 0;
-  emails.forEach(e => {
-    if (!APP.recipients.includes(e)) { APP.recipients.push(e); added++; }
-  });
-  document.getElementById('recip-input').value = '';
-  saveState();
-  renderRecipients();
-  toast(`Dodano ${added} adresów`, 'acc');
+  const raw=document.getElementById('recip-input').value;
+  const emails=raw.split(/[\n,;]+/).map(e=>e.trim().toLowerCase()).filter(e=>e&&e.includes('@'));
+  let added=0;
+  emails.forEach(e=>{ if(!DB.recipients.includes(e)){ DB.recipients.push(e); added++; } });
+  document.getElementById('recip-input').value='';
+  save(); renderRecipients(); toast(`Dodano ${added} adresów`,'ok');
 }
-
-function removeRecipient(idx) {
-  APP.recipients.splice(idx, 1);
-  saveState();
-  renderRecipients();
+function removeRecipient(i){ DB.recipients.splice(i,1); save(); renderRecipients(); }
+function clearRecipients(){ if(!confirm('Wyczyścić całą listę?')) return; DB.recipients=[]; save(); renderRecipients(); }
+function handleCSV(e){
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=(ev)=>{ const emails=ev.target.result.split(/[\n,;]+/).map(e=>e.trim().replace(/"/g,'').toLowerCase()).filter(e=>e&&e.includes('@')); let added=0; emails.forEach(e=>{ if(!DB.recipients.includes(e)){ DB.recipients.push(e); added++; } }); save(); renderRecipients(); toast(`Import: +${added}`,'ok'); };
+  r.readAsText(file); e.target.value='';
 }
-
-function clearRecipients() {
-  if (!confirm('Wyczyścić całą listę? Tej operacji nie można cofnąć.')) return;
-  APP.recipients = [];
-  saveState();
-  renderRecipients();
-}
-
-function importCSV() {
-  document.getElementById('csv-input').click();
-}
-
-function handleCSV(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    const text = ev.target.result;
-    const emails = text.split(/[\n,;]+/).map(e => e.trim().replace(/"/g,'').toLowerCase()).filter(e => e && e.includes('@'));
-    let added = 0;
-    emails.forEach(e => { if (!APP.recipients.includes(e)) { APP.recipients.push(e); added++; } });
-    saveState();
-    renderRecipients();
-    toast(`Import: dodano ${added} adresów`, 'acc');
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-}
-
 function renderRecipients() {
-  const list = document.getElementById('recip-list');
-  const label = document.getElementById('recip-count-label');
-  const countInfo = document.getElementById('recip-count-info');
-  const mCount = document.getElementById('m-recip');
-  const n = APP.recipients.length;
-  if (label) label.textContent = `Lista: ${n} adresów`;
-  if (countInfo) countInfo.textContent = `${n} adresów`;
-  if (mCount) mCount.textContent = n;
-  if (!list) return;
-  if (!n) { list.innerHTML = '<div style="font-size:12px;color:var(--t3);padding:8px;font-family:\'DM Mono\',monospace">Brak adresów</div>'; return; }
-  list.innerHTML = APP.recipients.map((e, i) => `
-    <div class="recip-item">
-      <span>${e}</span>
-      <span class="recip-del" onclick="removeRecipient(${i})">✕</span>
-    </div>
-  `).join('');
+  const n=DB.recipients.length;
+  const lbl=document.getElementById('recip-label'); if(lbl) lbl.textContent=`Lista: ${n} adresów`;
+  const el=document.getElementById('recip-list'); if(!el) return;
+  if(!n){ el.innerHTML=`<div style="font-size:11px;color:var(--t3);padding:8px">Brak adresów</div>`; return; }
+  el.innerHTML=DB.recipients.map((e,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 6px;font-size:11px;color:var(--t2);font-family:'JetBrains Mono',monospace;border-radius:4px" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='transparent'"><span>${e}</span><span style="cursor:pointer;color:var(--t3);padding:2px 5px" onclick="removeRecipient(${i})">✕</span></div>`).join('');
+  document.getElementById('c-recip').textContent=n;
+  document.getElementById('st-recip').textContent=n;
 }
 
 // ─────────────────────────────────────────
-// SEND
+// BAZA
 // ─────────────────────────────────────────
-async function quickSend() {
-  if (APP.sending) return;
-  if (!APP.smtp.api) { toast('Skonfiguruj SMTP najpierw', 'err'); return; }
-  if (!APP.recipients.length) { toast('Dodaj odbiorców na liście', 'err'); return; }
-  if (!APP.out.content_approved) { toast('Zatwierdź treść maila w pipeline', 'err'); return; }
+function loadBazaFields() {
+  const b=DB.baza;
+  ['firma','produkt','persona','usp','bole','ton','ceny'].forEach(k=>{ const el=document.getElementById('b-'+k); if(el&&b[k]) el.value=b[k]; });
+  if(b.freq) document.getElementById('b-freq').value=b.freq;
+}
+function saveBaza() {
+  DB.baza={firma:v('b-firma'),produkt:v('b-produkt'),persona:v('b-persona'),usp:v('b-usp'),bole:v('b-bole'),ton:v('b-ton'),ceny:v('b-ceny'),freq:v('b-freq')};
+  save(); toast('Baza zapisana ✓','ok');
+  const ok=document.getElementById('baza-ok'); ok.style.display='flex'; setTimeout(()=>ok.style.display='none',2500);
+}
 
-  const subject = APP.out.tytuly_approved || '(brak tematu)';
-  const content = APP.out.content_approved;
-  const html = `<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:20px;line-height:1.7;color:#1a1a1a">${content.replace(/\n/g,'<br>')}</div>`;
-
-  if (!confirm(`Wysłać broadcast do ${APP.recipients.length} odbiorców?\n\nSubject: "${subject}"`)) return;
-
-  APP.sending = true;
-  const btn = document.getElementById('quick-send-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Wysyłam…';
-  document.getElementById('send-result').innerHTML = '<div class="warn-strip">Wysyłanie w toku…</div>';
-
+// ─────────────────────────────────────────
+// API CONFIG
+// ─────────────────────────────────────────
+function loadApiFields() {
+  const a=DB.api;
+  if(a.anthropic_key) document.getElementById('s-anthropic').value=a.anthropic_key;
+  if(a.ml_key) { const el=document.getElementById('ml-key-stored'); if(el) el.value=a.ml_key; const eli=document.getElementById('ml-key-inline'); if(eli) eli.value=a.ml_key; }
+  if(a.key) document.getElementById('s-key').value=a.key;
+  if(a.from_email) document.getElementById('s-from').value=a.from_email;
+  if(a.from_name) document.getElementById('s-name').value=a.from_name;
+  if(a.test_email) document.getElementById('s-test').value=a.test_email;
+  updateApiStatus();
+}
+function saveApi() {
+  DB.api={anthropic_key:document.getElementById('s-anthropic').value.trim(),key:document.getElementById('s-key').value.trim(),ml_key:document.getElementById('ml-key-stored')?.value.trim()||DB.api.ml_key||'',from_email:v('s-from'),from_name:v('s-name'),test_email:v('s-test')};
+  save(); updateApiStatus(); toast('API zapisane ✓','ok');
+}
+function updateApiStatus() {
+  const ok=DB.api.key&&DB.api.from_email;
+  document.getElementById('api-dot').className='dot '+(ok?'ok':'err');
+  document.getElementById('api-status').textContent=ok?('Resend: '+DB.api.from_email):'API nie skonfigurowane';
+}
+async function testApi() {
+  if(!DB.api.key||!DB.api.test_email){ toast('Uzupełnij klucz API i email testowy','err'); return; }
+  const r=document.getElementById('api-result');
+  r.innerHTML='<div class="warn-s"><span class="spin spin-l"></span> Wysyłam…</div>';
   try {
-    const r = await fetch(APP.smtp.api + '/send-broadcast', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        subject,
-        html,
-        text: content,
-        recipients: APP.recipients,
-        from_name: APP.smtp.from_name,
-        from_email: APP.smtp.from_email
-      })
-    });
-    const d = await r.json();
-    document.getElementById('send-result').innerHTML = `<div class="ok-strip">✅ Wysłano do ${d.sent_count} odbiorców${d.failed_count ? `, błędy: ${d.failed_count}` : ''}</div>`;
-    APP.history.unshift({
-      date: new Date().toLocaleDateString('pl-PL'),
-      subject, sent: d.sent_count, type: 'standard'
-    });
-    APP.done++;
-    APP.sending = false;
-    resetPipeline();
-    saveState();
-    renderHistory();
-    toast(`Wysłano do ${d.sent_count} odbiorców ✓`, 'acc');
-  } catch(e) {
-    document.getElementById('send-result').innerHTML = `<div class="err-strip">❌ ${e.message}</div>`;
-    APP.sending = false;
-  }
-  btn.disabled = false;
-  btn.innerHTML = 'Wyślij broadcast →';
-}
-
-async function sendTest() {
-  if (!APP.smtp.api) { toast('Skonfiguruj SMTP najpierw', 'err'); return; }
-  if (!APP.smtp.test_email) { toast('Ustaw email testowy w SMTP/DKIM', 'err'); return; }
-  const subject = APP.out.tytuly_approved || 'Test MailFlow';
-  const content = APP.out.content_approved || APP.out.content || '(brak treści)';
-  const btn = document.getElementById('test-send-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin spin-l"></span> Wysyłam test…';
-  try {
-    const r = await fetch(APP.smtp.api + '/send-test', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        subject, to: APP.smtp.test_email,
-        html: `<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:20px;line-height:1.7;color:#1a1a1a">${content.replace(/\n/g,'<br>')}</div>`,
-        text: content
-      })
-    });
-    const d = await r.json();
-    if (d.success) toast(`Test wysłany na ${APP.smtp.test_email} ✓`, 'acc');
-    else toast('Błąd: ' + d.error, 'err');
-  } catch(e) {
-    toast('Błąd: ' + e.message, 'err');
-  }
-  btn.disabled = false;
-  btn.innerHTML = 'Wyślij test na swój email';
+    await resendOne(DB.api.test_email,'[TEST] MailFlow v2 działa ✓','<div style="font-family:Georgia,serif;padding:32px;color:#1a1a1a;background:#fff"><h2>MailFlow v2 działa! 🚀</h2><p>Wysyłka przez Resend z DKIM jest poprawnie skonfigurowana.</p></div>');
+    r.innerHTML=`<div class="ok-s">✅ Test wysłany na ${DB.api.test_email}</div>`;
+  } catch(e){ r.innerHTML=`<div class="err-s">❌ ${e.message}</div>`; }
 }
 
 // ─────────────────────────────────────────
-// PIPELINE STAGES
+// DASHBOARD
 // ─────────────────────────────────────────
-const STAGES = [
-  { id:'pomysl', who:'ai', label:'Agent 1 — Pomysł na maila', desc:'AI analizuje bazę wiedzy i generuje pomysł: temat przewodni, kąt narracyjny (historia, prowokacja, humor, edukacja, kontrarian), emocję którą wywołuje i clue maila.', type:'gen_pomysl' },
-  { id:'pomysl_audit', who:'human', label:'Audyt pomysłu', desc:'Sprawdź pomysł agenta. Edytuj jeśli chcesz, zatwierdź lub poproś o nową wersję.', type:'audit', auditOf:'pomysl' },
-  { id:'tytuly', who:'ai', label:'Agent 2 — Subject lines', desc:'AI generuje 5 clickbaitowych wariantów tytułu: ciekawość, emocja, prowokacja, FOMO, humor. Maks 60 znaków każdy. Ty wybierasz jeden.', type:'gen_tytuly' },
-  { id:'tytuly_audit', who:'human', label:'Wybór tytułu', desc:'Wybierz jeden z wariantów albo wpisz własny. Ten tytuł leci jako subject line.', type:'audit_tytuly' },
-  { id:'content', who:'ai', label:'Agent 3 — Treść maila', desc:'AI pisze pełny mail: hook w 2 zdaniach, karuzela emocji (śmiech → refleksja → niepokój → nadzieja → decyzja), historia lub prowokacja jako rdzeń, jedno konkretne CTA. Ton jak pracownik po godzinach.', type:'gen_content' },
-  { id:'content_audit', who:'human', label:'Audyt treści + wysyłka', desc:'Ostatni przegląd. Zatwierdź treść żeby odblokować wysyłkę do całej listy przez SMTP.', type:'audit_final' }
-];
-
-function render() {
-  document.getElementById('m-etap').textContent = (APP.step + 1) + '/' + STAGES.length;
-  document.getElementById('m-pending').textContent = APP.pending;
-  document.getElementById('m-done').textContent = APP.done;
-  document.getElementById('m-recip').textContent = APP.recipients.length;
-
-  const hasMail = APP.out.content_approved || APP.out.content;
-  const sendPanel = document.getElementById('send-panel');
-  const mailPanel = document.getElementById('mail-prev-panel');
-  if (sendPanel) sendPanel.style.display = APP.out.content_approved ? 'block' : 'none';
-  if (mailPanel) mailPanel.style.display = hasMail ? 'block' : 'none';
-  if (hasMail) {
-    document.getElementById('prev-subj').textContent = APP.out.tytuly_approved || '—';
-    document.getElementById('prev-body').textContent = APP.out.content_approved || APP.out.content || '—';
-  }
-  if (APP.smtp.api) {
-    const rc = document.getElementById('recip-count-info');
-    if (rc) rc.textContent = APP.recipients.length + ' adresów';
-    const sm = document.getElementById('smtp-info-mini');
-    if (sm) sm.textContent = APP.smtp.from_email || APP.smtp.api;
-  }
-
-  // Stages
-  const cont = document.getElementById('stages');
-  cont.innerHTML = '';
-  STAGES.forEach((s, i) => {
-    const isExp = APP.expanded === s.id;
-    const isSkip = i > APP.step + 1;
-    const isDone = isApproved(s);
-    const nodeClass = isDone ? 'done' : (s.who === 'ai' ? 'ai' : 'human');
-    const row = document.createElement('div');
-    row.className = 'stage-row';
-    const gutter = document.createElement('div');
-    gutter.className = 'stage-gutter';
-    const node = document.createElement('div');
-    node.className = 'snode ' + nodeClass;
-    gutter.appendChild(node);
-    if (i < STAGES.length - 1) {
-      const line = document.createElement('div');
-      line.className = 'sline';
-      gutter.appendChild(line);
-    }
-    const card = document.createElement('div');
-    card.className = 'scard' + (isExp ? ' exp' : '') + (isSkip ? ' skip' : '') + (isDone ? ' done-card' : '');
-    card.style.animationDelay = (i * 0.04) + 's';
-    card.innerHTML = `<div class="shead">
-      <span class="sbadge b-${s.who}">${s.who === 'ai' ? 'AI' : 'TY'}</span>
-      <span class="sname">${s.label}</span>
-      <span class="sarrow${isExp ? ' open' : ''}">▾</span>
-    </div>
-    <div class="sbody${isExp ? ' open' : ''}">${buildBody(s)}</div>`;
-    if (!isSkip) card.querySelector('.shead').addEventListener('click', () => {
-      APP.expanded = isExp ? null : s.id;
-      render();
-    });
-    wireBody(s, card.querySelector('.sbody'));
-    row.appendChild(gutter);
-    row.appendChild(card);
-    cont.appendChild(row);
-  });
-
-  // Progress
-  const prog = document.getElementById('prog-steps');
-  prog.innerHTML = STAGES.map((s, i) => {
-    const cls = i < APP.step ? 'done' : (i === APP.step ? 'cur' : '');
-    return `<div class="pstep ${cls}"><div class="pdot"></div><span>${s.label}</span></div>`;
-  }).join('');
-
-  // Badge
-  const badge = document.getElementById('badge-pipeline');
-  if (badge) {
-    badge.textContent = APP.pending;
-    badge.classList.toggle('show', APP.pending > 0);
-  }
-}
-
-function isApproved(s) {
-  if (s.type === 'gen_pomysl') return !!APP.out.pomysl_approved;
-  if (s.type === 'gen_tytuly') return !!APP.out.tytuly_approved;
-  if (s.type === 'gen_content') return !!APP.out.content_approved;
-  if (s.type === 'audit') return !!APP.out[s.auditOf + '_approved'];
-  if (s.type === 'audit_tytuly') return !!APP.out.tytuly_approved;
-  if (s.type === 'audit_final') return !!APP.out.content_approved;
-  return false;
-}
-
-function buildBody(s) {
-  const out = APP.out[s.id] || '';
-  let h = `<p class="sdesc">${s.desc}</p>`;
-
-  if (s.type === 'gen_pomysl') {
-    h += `<div class="field"><label class="flabel">Dodatkowy kontekst (opcjonalnie)</label>
-    <textarea id="extra-ctx" rows="2" placeholder="Np. ten mail ma być śmieszny; albo: uderz w ból samotności; zrób kontrariański">${APP.out.pomysl_extra || ''}</textarea></div>`;
-    if (out) h += `<div class="outbox">${out}</div>`;
-    const loading = APP.out.pomysl_loading;
-    h += `<div class="btn-row"><button class="btn ${out ? 'btn-ghost-acc' : 'btn-acc'}" data-gen="gen_pomysl" ${loading ? 'disabled' : ''}>
-      ${loading ? '<span class="spin spin-l"></span>Generuję…' : (out ? '↺ Nowy pomysł' : '⚡ Generuj pomysł')}
-    </button></div>`;
-  }
-
-  else if (s.type === 'audit') {
-    const prev = APP.out[s.auditOf] || '';
-    h += `<div class="outbox${prev ? '' : ' empty'}">${prev || 'Brak — wróć do poprzedniego etapu.'}</div>`;
-    h += `<div class="field"><label class="flabel">Edytuj przed zatwierdzeniem</label>
-    <textarea id="edit-${s.id}" rows="4">${prev}</textarea></div>`;
-    h += `<div class="btn-row">
-      <button class="btn btn-acc" data-approve="${s.auditOf}">Zatwierdź ✓</button>
-      <button class="btn" data-regen="${s.auditOf}">↺ Nowa wersja</button>
-    </div>`;
-    if (APP.out[s.auditOf + '_approved']) h += `<div class="ok-strip">✓ Zatwierdzono</div>`;
-  }
-
-  else if (s.type === 'gen_tytuly') {
-    if (APP.out.tytuly_opts && APP.out.tytuly_opts.length) {
-      h += `<label class="flabel" style="margin-bottom:8px">Wygenerowane warianty</label>`;
-      h += `<div class="subj-opts">` + APP.out.tytuly_opts.map((o, i) =>
-        `<div class="subj-opt"><span class="subj-n">${i + 1}</span>${o}</div>`
-      ).join('') + `</div>`;
-    }
-    const loading = APP.out.tytuly_loading;
-    h += `<div class="btn-row"><button class="btn ${APP.out.tytuly ? 'btn-ghost-acc' : 'btn-acc'}" data-gen="gen_tytuly" ${loading ? 'disabled' : ''}>
-      ${loading ? '<span class="spin spin-l"></span>Generuję…' : (APP.out.tytuly ? '↺ Nowe tytuły' : '⚡ Generuj tytuły')}
-    </button></div>`;
-  }
-
-  else if (s.type === 'audit_tytuly') {
-    const opts = APP.out.tytuly_opts || [];
-    if (opts.length) {
-      h += `<label class="flabel" style="margin-bottom:8px">Wybierz tytuł</label>`;
-      h += `<div class="subj-opts">` + opts.map((o, i) =>
-        `<div class="subj-opt${APP.chosen_subj === i ? ' chosen' : ''}" data-subj="${i}">
-          <span class="subj-n">${i + 1}</span>${o}
-        </div>`
-      ).join('') + `</div>`;
-    } else {
-      h += `<div class="outbox empty">Wróć do poprzedniego etapu i wygeneruj tytuły.</div>`;
-    }
-    h += `<div class="field"><label class="flabel">Lub wpisz własny</label>
-    <input type="text" id="custom-subj" placeholder="Subject line…" value="${APP.out.tytuly_approved || ''}"></div>`;
-    h += `<div class="btn-row"><button class="btn btn-acc" data-approve-subj="1">Zatwierdź tytuł ✓</button></div>`;
-    if (APP.out.tytuly_approved) h += `<div class="ok-strip">✓ Tytuł: "${APP.out.tytuly_approved}"</div>`;
-  }
-
-  else if (s.type === 'gen_content') {
-    if (APP.out.content) h += `<div class="outbox">${APP.out.content}</div>`;
-    const loading = APP.out.content_loading;
-    h += `<div class="btn-row"><button class="btn ${APP.out.content ? 'btn-ghost-acc' : 'btn-acc'}" data-gen="gen_content" ${loading ? 'disabled' : ''}>
-      ${loading ? '<span class="spin spin-l"></span>Generuję…' : (APP.out.content ? '↺ Nowa treść' : '⚡ Generuj treść maila')}
-    </button></div>`;
-  }
-
-  else if (s.type === 'audit_final') {
-    h += `<label class="flabel">Subject line</label>`;
-    h += `<div class="outbox" style="color:var(--ai);font-family:'DM Mono',monospace;font-size:12px">${APP.out.tytuly_approved || '(brak)'}</div>`;
-    h += `<div class="field"><label class="flabel">Treść maila</label>
-    <textarea id="edit-final" rows="10">${APP.out.content || ''}</textarea></div>`;
-    h += `<div class="btn-row">
-      <button class="btn btn-acc" data-approve-final="1">Zatwierdź ✓</button>
-      <button class="btn" data-regen="content">↺ Nowa treść</button>
-    </div>`;
-    if (APP.out.content_approved) h += `<div class="ok-strip">✓ Mail zatwierdzony — panel wysyłki odblokowany.</div>`;
-  }
-
-  return h;
-}
-
-function wireBody(s, body) {
-  body.querySelectorAll('[data-gen]').forEach(btn => {
-    btn.addEventListener('click', () => { if (!btn.disabled) runGen(s); });
-  });
-
-  const apBtn = body.querySelector('[data-approve]');
-  if (apBtn) apBtn.addEventListener('click', () => {
-    const ta = body.querySelector(`#edit-${s.id}`);
-    APP.out[apBtn.dataset.approve + '_approved'] = ta ? ta.value : (APP.out[s.auditOf] || '');
-    APP.pending = Math.max(0, APP.pending - 1);
-    const idx = STAGES.findIndex(x => x.id === s.id);
-    APP.step = Math.max(APP.step, idx + 1);
-    APP.expanded = STAGES[idx + 1]?.id || null;
-    render();
-  });
-
-  body.querySelectorAll('[data-subj]').forEach(el => {
-    el.addEventListener('click', () => {
-      APP.chosen_subj = parseInt(el.dataset.subj);
-      const inp = body.querySelector('#custom-subj');
-      if (inp) inp.value = (APP.out.tytuly_opts || [])[APP.chosen_subj] || '';
-      render();
-    });
-  });
-
-  const aSubj = body.querySelector('[data-approve-subj]');
-  if (aSubj) aSubj.addEventListener('click', () => {
-    const inp = body.querySelector('#custom-subj');
-    APP.out.tytuly_approved = inp ? inp.value : '';
-    APP.pending = Math.max(0, APP.pending - 1);
-    const idx = STAGES.findIndex(x => x.id === s.id);
-    APP.step = Math.max(APP.step, idx + 1);
-    APP.expanded = STAGES[idx + 1]?.id || null;
-    render();
-  });
-
-  const aFinal = body.querySelector('[data-approve-final]');
-  if (aFinal) aFinal.addEventListener('click', () => {
-    const ta = body.querySelector('#edit-final');
-    APP.out.content_approved = ta ? ta.value : (APP.out.content || '');
-    APP.pending = Math.max(0, APP.pending - 1);
-    render();
-  });
-
-  const regenBtn = body.querySelector('[data-regen]');
-  if (regenBtn) regenBtn.addEventListener('click', () => {
-    const orig = STAGES.find(x => x.id === regenBtn.dataset.regen);
-    if (orig) { APP.expanded = orig.id; runGen(orig); }
-  });
-}
-
-async function runGen(s) {
-  const loadKey = s.id + '_loading';
-  APP.out[loadKey] = true;
-  APP.expanded = s.id;
-  render();
-  const result = await callAI(s.type);
-  APP.out[loadKey] = false;
-  if (s.type === 'gen_tytuly') {
-    const lines = result.split('\n').filter(l => /^\d+[.)]\s/.test(l.trim()));
-    APP.out.tytuly_opts = lines.map(l => l.replace(/^\d+[.)]\s*/, '').trim());
-    APP.out.tytuly = result;
-  } else if (s.type === 'gen_pomysl') {
-    const ta = document.querySelector('#extra-ctx');
-    if (ta) APP.out.pomysl_extra = ta.value;
-    APP.out.pomysl = result;
-  } else if (s.type === 'gen_content') {
-    APP.out.content = result;
-    APP.out.content_approved = '';
-  }
-  APP.pending++;
-  const idx = STAGES.findIndex(x => x.id === s.id);
-  const next = STAGES[idx + 1];
-  if (next) { APP.step = Math.max(APP.step, idx + 1); APP.expanded = next.id; }
-  render();
-}
-
-// ─────────────────────────────────────────
-// AI CALLS
-// ─────────────────────────────────────────
-async function callAI(type) {
-  const baza = bazaStr();
-  const pomysl = APP.out.pomysl_approved || APP.out.pomysl || '';
-  const subj = APP.out.tytuly_approved || '';
-  let prompt = '';
-
-  if (type === 'gen_pomysl') {
-    const extra = APP.out.pomysl_extra || '';
-    prompt = `Jesteś AI copywriterem email marketingu dla marki:\n${baza}\n\nDodatkowy kontekst: ${extra || 'brak'}\n\nZaproponuj JEDEN konkretny pomysł na maila. Format:\n\n**Temat przewodni:** [1 zdanie]\n**Kąt narracyjny:** [historia / prowokacja / humor / edukacja / kontrarian — wybierz jeden, wyjaśnij w 1 zdaniu]\n**Główna emocja:** [np. śmiech, niepokój, refleksja, nadzieja, złość]\n**Clue maila:** [pointa lub zwrot akcji w 1 zdaniu]\n**Typ maila:** [wartościowy / promocyjny]\n\nPisz po polsku. Bez wstępów, od razu pomysł.`;
-  } else if (type === 'gen_tytuly') {
-    prompt = `Jesteś mistrzem subject lines.\n\nBaza:\n${baza}\n\nPomysł:\n${pomysl}\n\n5 subject lines, każdy w innym stylu:\n1. Ciekawość / niedopowiedzenie\n2. Emocja / ból klienta\n3. Prowokacja / kontrarian\n4. FOMO / pilność\n5. Humor / nieoczekiwany zwrot\n\nZasady: maks 60 znaków, bez emoji, po polsku.\nFormat: tylko tytuły, każdy w osobnej linii z numerem i kropką.`;
-  } else if (type === 'gen_content') {
-    prompt = `Jesteś wybitnym email copywriterem. Piszesz jak pracownik po godzinach — ludzko, szczerze, nieperfekcyjnie.\n\nBaza:\n${baza}\n\nPomysł:\n${pomysl}\n\nSubject:\n${subj || '(użyj najlepszego z pomysłu)'}\n\nStruktura maila:\n— HOOK: 1-2 zdania które zatrzymują scrollowanie\n— RDZEŃ: historia/prowokacja/kontrarian, karuzela emocji (śmiech → refleksja → niepokój → nadzieja)\n— ZWROT: nieoczekiwany insight lub punkt kulminacyjny\n— CTA: jedno konkretne wezwanie\n\n200-350 słów. Po polsku. Bez tematu w treści. Bez nagłówków.`;
-  }
-
-  try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1200,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const d = await r.json();
-    return d.content?.[0]?.text || 'Błąd generowania.';
-  } catch(e) {
-    return 'Błąd połączenia z API Anthropic.';
-  }
+function renderDashboard() {
+  const totalSent=DB.history.length;
+  const valueCamps=DB.campaigns.filter(c=>c.type==='value').length;
+  const profitCamps=DB.campaigns.filter(c=>c.type==='profit').length;
+  document.getElementById('st-total').textContent=totalSent;
+  document.getElementById('st-value').textContent=valueCamps;
+  document.getElementById('st-profit').textContent=profitCamps;
+  document.getElementById('st-recip').textContent=DB.recipients.length;
+  const act=document.getElementById('dash-activity');
+  if(!DB.history.length){ act.innerHTML='<div class="empty">Brak aktywności. Wyślij pierwszy mail.</div>'; return; }
+  act.innerHTML=DB.history.slice(0,5).map(h=>`
+    <div class="camp-item" style="cursor:default">
+      <div class="camp-item-ico">✉</div>
+      <div class="camp-item-info">
+        <div class="camp-item-name">${h.subject}</div>
+        <div class="camp-item-meta">${h.date} · ${h.campName} · ${h.sent} odbiorców</div>
+      </div>
+      <div class="camp-item-r"><span class="status ${h.type==='profit'?'status-ready':'status-value'}">${h.type}</span></div>
+    </div>`).join('');
 }
 
 // ─────────────────────────────────────────
 // UTILS
 // ─────────────────────────────────────────
-function resetPipeline() {
-  APP.step = 0; APP.out = {}; APP.expanded = null;
-  APP.chosen_subj = null; APP.pending = 0;
+function updateCounters() {
+  const vc=DB.campaigns.filter(c=>c.type==='value').length;
+  const pc=DB.campaigns.filter(c=>c.type==='profit').length;
+  document.getElementById('c-value').textContent=vc;
+  document.getElementById('c-profit').textContent=pc;
+  document.getElementById('nb-value').textContent=vc; document.getElementById('nb-value').classList.toggle('show',vc>0);
+  document.getElementById('nb-profit').textContent=pc; document.getElementById('nb-profit').classList.toggle('show',pc>0);
 }
 
-function renderHistory() {
-  const el = document.getElementById('hist-list');
-  if (!el) return;
-  if (!APP.history.length) {
-    el.innerHTML = '<div class="empty-state">Brak historii.<br>Wyślij pierwszy mail przez Pipeline.</div>';
-    return;
-  }
-  el.innerHTML = APP.history.map(h => `
-    <div class="hist-item">
-      <div class="hist-ico">✉</div>
-      <div class="hist-info">
-        <div class="hist-subj">${h.subject}</div>
-        <div class="hist-meta">${h.date} · ${h.sent || '?'} odbiorców · broadcast SMTP</div>
-      </div>
-      <div class="htag tag-${h.type === 'promo' ? 'promo' : 'std'}">${h.type === 'promo' ? 'Promo' : 'Standard'}</div>
-    </div>
-  `).join('');
-}
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('on'); }));
 
-function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-function show(id) { const el = document.getElementById(id); if (el) el.style.display = 'flex'; }
-function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+function v(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
 
 function toast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast on' + (type ? ' ' + type : '');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => { t.className = 'toast'; }, 3200);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast on'+(type?' '+type:'');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='toast',3000);
 }
 
 // ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
-loadBazaFields();
-loadSmtpFields();
+updateCounters();
+renderDashboard();
+renderPipeline();
 renderRecipients();
-renderHistory();
-updateBazaPreview();
-render();
+updateApiStatus();
+
+// ─────────────────────────────────────────
+// MAILERLITE INTEGRATION
+// ─────────────────────────────────────────
+const ML_BASE = 'https://connect.mailerlite.com/api';
+const mlState = {
+  subs: [], subsPage: 1, subsMeta: null,
+  campaigns: [], groups: [], activeTab: 'subscribers'
+};
+
+function mlKey() { return DB.api.ml_key || ''; }
+
+function mlHeaders() {
+  return { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + mlKey() };
+}
+
+async function mlFetch(path, options={}) {
+  try {
+    const r = await fetch(ML_BASE + path, { ...options, headers: mlHeaders(), mode: 'cors' });
+    if (!r.ok) { const e = await r.json().catch(()=>({message:'HTTP '+r.status})); throw new Error(e.message || r.status); }
+    return r.json();
+  } catch(e) {
+    if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError') || e.message.includes('CORS')) {
+      throw new Error('Błąd CORS — MailerLite API wymaga backendu proxy. Skontaktuj się ze wsparciem lub użyj funkcji Resend do wysyłki.');
+    }
+    throw e;
+  }
+}
+
+function saveMLKey() {
+  const key = document.getElementById('ml-key-inline').value.trim();
+  if (!key) { toast('Wpisz klucz API', 'err'); return; }
+  DB.api.ml_key = key;
+  save();
+  initMailerLite();
+}
+
+async function initMailerLite() {
+  const noKey = document.getElementById('ml-no-key');
+  const statusBar = document.getElementById('ml-status-bar');
+  const tabs = document.getElementById('ml-tabs');
+  if (!mlKey()) {
+    noKey.style.display = 'block';
+    statusBar.style.display = 'none';
+    tabs.style.display = 'none';
+    document.querySelectorAll('[id^=ml-tab-]').forEach(el => el.style.display = 'none');
+    return;
+  }
+  noKey.style.display = 'none';
+  try {
+    // Load groups for send tab
+    await mlLoadGroups();
+    await mlLoadSubs(1);
+    await mlLoadCampaigns();
+    statusBar.style.display = 'block';
+    tabs.style.display = 'flex';
+    document.getElementById('ml-account-info').textContent = mlState.subsMeta ? `${mlState.subsMeta.total} subskrybentów łącznie` : '';
+    mlTab('subscribers', document.querySelector('.tab-btn'));
+    mlPopulateSendTab();
+  } catch(e) {
+    noKey.style.display = 'block';
+    statusBar.style.display = 'none';
+    tabs.style.display = 'none';
+    toast('Błąd MailerLite: ' + e.message, 'err');
+  }
+}
+
+function mlTab(name, el) {
+  mlState.activeTab = name;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  if (el) el.classList.add('on');
+  document.querySelectorAll('[id^=ml-tab-]').forEach(d => d.style.display = 'none');
+  const tab = document.getElementById('ml-tab-' + name);
+  if (tab) tab.style.display = 'block';
+}
+
+async function mlSyncAll() {
+  const ico = document.getElementById('ml-sync-ico');
+  ico.textContent = '⟳';
+  ico.style.animation = 'sp 0.6s linear infinite';
+  try {
+    await mlLoadSubs(1);
+    await mlLoadCampaigns();
+    await mlLoadGroups();
+    toast('Zsynchronizowano z MailerLite ✓', 'ok');
+  } catch(e) { toast('Błąd sync: ' + e.message, 'err'); }
+  ico.textContent = '↻';
+  ico.style.animation = '';
+}
+
+// ── SUBSCRIBERS ──
+async function mlLoadSubs(page=1) {
+  mlState.subsPage = page;
+  const el = document.getElementById('ml-subs-list');
+  if (el) el.innerHTML = '<div style="padding:16px;text-align:center"><span class="spin spin-l"></span></div>';
+  try {
+    const d = await mlFetch(`/subscribers?limit=25&page=${page}&filter[status]=active`);
+    mlState.subs = d.data || [];
+    mlState.subsMeta = d.meta;
+    renderMLSubs();
+    // Stats
+    const total = d.meta?.total || 0;
+    if (document.getElementById('ml-total-subs')) document.getElementById('ml-total-subs').textContent = total.toLocaleString('pl-PL');
+    // Load unsubscribed count
+    mlFetch('/subscribers?limit=1&filter[status]=unsubscribed').then(u => {
+      if (document.getElementById('ml-unsub')) document.getElementById('ml-unsub').textContent = (u.meta?.total||0).toLocaleString('pl-PL');
+    }).catch(()=>{});
+    mlFetch('/subscribers?limit=1&filter[status]=unconfirmed').then(u => {
+      if (document.getElementById('ml-unconf')) document.getElementById('ml-unconf').textContent = (u.meta?.total||0).toLocaleString('pl-PL');
+    }).catch(()=>{});
+  } catch(e) { if(el) el.innerHTML = `<div style="padding:12px;font-size:12px;color:var(--red)">❌ ${e.message}</div>`; }
+}
+
+function renderMLSubs(filter='') {
+  const el = document.getElementById('ml-subs-list');
+  if (!el) return;
+  const subs = filter ? mlState.subs.filter(s => s.email.includes(filter)) : mlState.subs;
+  if (!subs.length) { el.innerHTML = `<div style="padding:12px;font-size:11px;color:var(--t3)">Brak subskrybentów</div>`; return; }
+  el.innerHTML = subs.map(s => `
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='transparent'">
+      <div style="width:6px;height:6px;border-radius:50%;background:${s.status==='active'?'var(--green)':'var(--t3)'};flex-shrink:0"></div>
+      <span style="flex:1;font-family:'JetBrains Mono',monospace;color:var(--t2)">${s.email}</span>
+      <span style="font-size:10px;color:var(--t3)">${s.fields?.name||''}</span>
+      <span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3)">${s.subscribed_at?.substring(0,10)||''}</span>
+    </div>`).join('');
+  // Pagination
+  const meta = mlState.subsMeta;
+  if (meta) {
+    const pageInfo = document.getElementById('ml-page-info');
+    if (pageInfo) pageInfo.textContent = `Strona ${meta.current_page}/${meta.last_page} · ${meta.total} łącznie`;
+    const prev = document.getElementById('ml-prev-btn');
+    const next = document.getElementById('ml-next-btn');
+    if (prev) prev.disabled = meta.current_page <= 1;
+    if (next) next.disabled = meta.current_page >= meta.last_page;
+  }
+}
+
+function mlFilterSubs(val) { renderMLSubs(val); }
+
+function mlImportToApp() {
+  let added = 0;
+  mlState.subs.forEach(s => {
+    if (s.email && !DB.recipients.includes(s.email)) { DB.recipients.push(s.email); added++; }
+  });
+  save();
+  renderRecipients();
+  toast(`Zaimportowano ${added} adresów do appki ✓`, 'ok');
+}
+
+// ── CAMPAIGNS ──
+async function mlLoadCampaigns() {
+  const el = document.getElementById('ml-campaigns-list');
+  if (el) el.innerHTML = '<div style="padding:12px;text-align:center"><span class="spin spin-l"></span></div>';
+  try {
+    const d = await mlFetch('/campaigns?limit=20&sort=-created_at');
+    mlState.campaigns = d.data || [];
+    renderMLCampaigns();
+  } catch(e) { if(el) el.innerHTML = `<div style="padding:12px;font-size:12px;color:var(--red)">❌ ${e.message}</div>`; }
+}
+
+function renderMLCampaigns() {
+  const el = document.getElementById('ml-campaigns-list');
+  if (!el) return;
+  if (!mlState.campaigns.length) { el.innerHTML = '<div class="empty">Brak kampanii w MailerLite.</div>'; return; }
+  el.innerHTML = mlState.campaigns.map(c => {
+    const stats = c.stats || {};
+    const openRate = stats.open_rate?.string || '—';
+    const clickRate = stats.click_rate?.string || '—';
+    const sent = stats.sent || 0;
+    const statusColor = { sent:'var(--green)', draft:'var(--t3)', ready:'var(--blue)' }[c.status] || 'var(--t3)';
+    return `<div class="camp-item" style="cursor:default">
+      <div class="camp-item-ico">📧</div>
+      <div class="camp-item-info">
+        <div class="camp-item-name">${c.name}</div>
+        <div class="camp-item-meta">${c.created_at?.substring(0,10)||''} · wysłane: ${sent.toLocaleString('pl-PL')}</div>
+      </div>
+      <div class="camp-item-r" style="gap:12px">
+        <div style="text-align:right">
+          <div style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace">OR</div>
+          <div style="font-size:13px;font-weight:700;color:var(--accent)">${openRate}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace">CTR</div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue)">${clickRate}</div>
+        </div>
+        <span class="status" style="color:${statusColor};border-color:${statusColor}20;background:${statusColor}10">${c.status}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Also render stats tab
+  renderMLStats();
+}
+
+function renderMLStats() {
+  const el = document.getElementById('ml-stats-list');
+  if (!el) return;
+  const sent = mlState.campaigns.filter(c => c.status === 'sent');
+  if (!sent.length) { el.innerHTML = '<div class="empty">Brak wysłanych kampanii w MailerLite.</div>'; return; }
+  el.innerHTML = sent.map(c => {
+    const s = c.stats || {};
+    const bars = [
+      { label: 'Open Rate', val: s.open_rate?.float||0, str: s.open_rate?.string||'0%', color: 'var(--accent)' },
+      { label: 'Click Rate', val: s.click_rate?.float||0, str: s.click_rate?.string||'0%', color: 'var(--blue)' },
+      { label: 'Unsubscribe', val: s.unsubscribe_rate?.float||0, str: s.unsubscribe_rate?.string||'0%', color: 'var(--red)' },
+    ];
+    return `<div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:2px">${c.name}</div>
+          <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace">${c.created_at?.substring(0,10)||''} · ${(s.sent||0).toLocaleString('pl-PL')} wysłanych</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">${s.open_rate?.string||'—'}</div>
+          <div style="font-size:10px;color:var(--t3)">open rate</div>
+        </div>
+      </div>
+      ${bars.map(b => `<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:3px"><span>${b.label}</span><span style="color:${b.color}">${b.str}</span></div>
+        <div class="pbar-wrap"><div class="pbar" style="width:${Math.min(b.val*100,100)}%;background:${b.color}"></div></div>
+      </div>`).join('')}
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+        ${[['Wysłane',s.sent||0,'var(--text)'],['Otwarcia',s.unique_opens_count||0,'var(--accent)'],['Kliknięcia',s.unique_clicks_count||0,'var(--blue)'],['Bounces',(s.hard_bounces_count||0)+(s.soft_bounces_count||0),'var(--red)']].map(([l,v,c])=>`<div style="background:var(--s2);border-radius:6px;padding:8px;text-align:center"><div style="font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:${c}">${v.toLocaleString('pl-PL')}</div><div style="font-size:10px;color:var(--t3)">${l}</div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── GROUPS ──
+async function mlLoadGroups() {
+  const el = document.getElementById('ml-groups-list');
+  if (el) el.innerHTML = '<div style="padding:12px;text-align:center"><span class="spin spin-l"></span></div>';
+  try {
+    const d = await mlFetch('/groups?limit=50');
+    mlState.groups = d.data || [];
+    renderMLGroups();
+    // Populate send tab group select
+    const sel = document.getElementById('ml-send-group');
+    if (sel) {
+      sel.innerHTML = '<option value="all">Cała lista</option>' + mlState.groups.map(g => `<option value="${g.id}">${g.name} (${g.active_count || 0})</option>`).join('');
+    }
+  } catch(e) { if(el) el.innerHTML = `<div style="padding:12px;font-size:12px;color:var(--red)">❌ ${e.message}</div>`; }
+}
+
+function renderMLGroups() {
+  const el = document.getElementById('ml-groups-list');
+  if (!el) return;
+  if (!mlState.groups.length) { el.innerHTML = '<div class="empty">Brak grup w MailerLite.</div>'; return; }
+  el.innerHTML = mlState.groups.map(g => `
+    <div class="camp-item" style="cursor:default">
+      <div class="camp-item-ico">👥</div>
+      <div class="camp-item-info">
+        <div class="camp-item-name">${g.name}</div>
+        <div class="camp-item-meta">aktywni: ${g.active_count||0} · wysłane: ${g.sent_count||0}</div>
+      </div>
+      <div class="camp-item-r" style="gap:12px">
+        <div style="text-align:right">
+          <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace">OR</div>
+          <div style="font-size:13px;font-weight:700;color:var(--accent)">${g.open_rate?.string||'—'}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace">CTR</div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue)">${g.click_rate?.string||'—'}</div>
+        </div>
+        <button class="btn btn-sm" onclick="mlAddToGroup('${g.id}','${g.name}')">+ Dodaj sub</button>
+      </div>
+    </div>`).join('');
+}
+
+async function mlAddToGroup(groupId, groupName) {
+  const email = prompt(`Dodaj email do grupy "${groupName}":`);
+  if (!email) return;
+  try {
+    await mlFetch('/subscribers', { method:'POST', body: JSON.stringify({ email, groups:[groupId] }) });
+    toast(`Dodano ${email} do "${groupName}" ✓`, 'ok');
+  } catch(e) { toast('Błąd: '+e.message, 'err'); }
+}
+
+// ── SEND VIA ML ──
+function mlPopulateSendTab() {
+  const campSel = document.getElementById('ml-send-camp');
+  if (!campSel) return;
+  campSel.innerHTML = DB.campaigns.length
+    ? DB.campaigns.map(c => `<option value="${c.id}">${c.name} (${c.type})</option>`).join('')
+    : '<option value="">— brak kampanii —</option>';
+  campSel.onchange = mlUpdateMailSelect;
+  mlUpdateMailSelect();
+}
+
+function mlUpdateMailSelect() {
+  const campId = document.getElementById('ml-send-camp')?.value;
+  const mailSel = document.getElementById('ml-send-mail');
+  if (!mailSel || !campId) return;
+  const c = DB.campaigns.find(x => x.id===campId);
+  const mails = c ? c.mails.filter(m => m.approved && !m.sentAt) : [];
+  mailSel.innerHTML = mails.length
+    ? mails.map(m => `<option value="${m.id}">${m.subject||'(brak tematu)'}</option>`).join('')
+    : '<option value="">— brak zatwierdzonych maili —</option>';
+  mailSel.onchange = mlUpdateSendPreview;
+  mlUpdateSendPreview();
+}
+
+function mlUpdateSendPreview() {
+  const campId = document.getElementById('ml-send-camp')?.value;
+  const mailId = document.getElementById('ml-send-mail')?.value;
+  const prev = document.getElementById('ml-send-preview');
+  if (!campId || !mailId || !prev) { if(prev) prev.style.display='none'; return; }
+  const c = DB.campaigns.find(x=>x.id===campId);
+  const m = c?.mails.find(x=>x.id===mailId);
+  if (!m) { prev.style.display='none'; return; }
+  prev.style.display = 'block';
+  document.getElementById('ml-send-prev-subj').textContent = m.subject;
+  document.getElementById('ml-send-prev-body').textContent = m.body?.substring(0,200)+'…';
+}
+
+async function mlSendCampaign() {
+  const campId = document.getElementById('ml-send-camp')?.value;
+  const mailId = document.getElementById('ml-send-mail')?.value;
+  const groupId = document.getElementById('ml-send-group')?.value;
+  const schedTime = document.getElementById('ml-send-time')?.value;
+  if (!campId || !mailId) { toast('Wybierz kampanię i mail', 'err'); return; }
+  const c = DB.campaigns.find(x=>x.id===campId);
+  const m = c?.mails.find(x=>x.id===mailId);
+  if (!m) { toast('Mail nie znaleziony', 'err'); return; }
+  if (!confirm(`Wysłać "${m.subject}" przez MailerLite${groupId!=='all'?' do wybranej grupy':' do całej listy'}?`)) return;
+  const resultEl = document.getElementById('ml-send-result');
+  resultEl.innerHTML = '<div class="warn-s"><span class="spin spin-l"></span> Tworzę kampanię w MailerLite…</div>';
+  try {
+    const htmlContent = makeHtml(m.subject, m.body, m.ctas);
+    // Build groups array
+    const groups = groupId !== 'all' ? [groupId] : mlState.groups.map(g=>g.id);
+    // Create campaign in ML
+    const campPayload = {
+      name: `${c.name} — ${m.subject}`.substring(0,100),
+      type: 'regular',
+      subject: m.subject,
+      from: DB.api.from_email || 'newsletter@adspice.pl',
+      from_name: DB.api.from_name || 'Newsletter',
+      content: { html: htmlContent },
+      groups: groups.length ? groups : undefined
+    };
+    if (schedTime) campPayload.schedule = { delivery: 'scheduled', schedule_for: schedTime.replace('T',' ') + ':00' };
+    const created = await mlFetch('/campaigns', { method:'POST', body: JSON.stringify(campPayload) });
+    // Send it
+    if (!schedTime) {
+      await mlFetch(`/campaigns/${created.data.id}/schedule`, { method:'POST', body: JSON.stringify({ delivery: 'instant' }) });
+    }
+    m.sentAt = new Date().toLocaleDateString('pl-PL');
+    c.sentCount = (c.sentCount||0)+1;
+    DB.history.unshift({ date: m.sentAt, campName: c.name, subject: m.subject, sent: '(ML)', type: c.type });
+    save();
+    resultEl.innerHTML = `<div class="ok-s">✅ Kampania wysłana przez MailerLite! ID: ${created.data.id}</div>`;
+    toast('Wysłano przez MailerLite ✓', 'ok');
+    mlLoadCampaigns();
+    mlUpdateMailSelect();
+  } catch(e) {
+    resultEl.innerHTML = `<div class="err-s">❌ ${e.message}</div>`;
+    toast('Błąd: '+e.message, 'err');
+  }
+}
+
+async function mlSendTest() {
+  if (!DB.api.ml_key || !DB.api.test_email) { toast('Ustaw test email w Resend/API', 'err'); return; }
+  const mailId = document.getElementById('ml-send-mail')?.value;
+  const campId = document.getElementById('ml-send-camp')?.value;
+  const c = DB.campaigns.find(x=>x.id===campId);
+  const m = c?.mails.find(x=>x.id===mailId);
+  if (!m) { toast('Wybierz mail', 'err'); return; }
+  try {
+    // Use Resend for test (faster)
+    await resendOne(DB.api.test_email, '[TEST ML] '+m.subject, makeHtml(m.subject, m.body, m.ctas));
+    toast('Test wysłany na '+DB.api.test_email+' ✓', 'ok');
+  } catch(e) { toast('Błąd: '+e.message, 'err'); }
+}
+
+function mlCreateCampaignModal() {
+  toast('Utwórz mail przez Pipeline AI, zatwierdź go w kampanii, a następnie wyślij go tutaj przez MailerLite.', '');
+}
+
 </script>
 </body>
 </html>
